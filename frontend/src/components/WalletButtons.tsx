@@ -95,6 +95,7 @@ const WalletView = ({ wallet }: { wallet: Wallet }) => {
       //   Connect Wallet
       // </button>
       <Button
+        _hover={{ bg: "cyan.600" }}
         isDisabled={!isWalletReady}
         onClick={() => onWalletConnectRequest(wallet.name)}
       >

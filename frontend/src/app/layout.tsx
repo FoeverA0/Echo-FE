@@ -15,7 +15,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body>
         <Providers>
           <NavBar />
-          <Page>{children}</Page>
+          <div style={{ marginLeft: "250px", padding: "16px" }}>
+            <Page>{children}</Page>
+          </div>
         </Providers>
       </body>
     </html>
