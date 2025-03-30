@@ -43,7 +43,7 @@ export const NavBar = () => {
                     </Text>
                 </Box>
                 <NextLink href="/knowledgeAvatars" passHref>
-                    <Link
+                    <Text
                         px={4}
                         py={4}
                         rounded="none"
@@ -53,10 +53,10 @@ export const NavBar = () => {
                         _hover={{textDecoration: "none", bg: "gray.100"}}
                     >
                         Knowledge Avators
-                    </Link>
+                    </Text>
                 </NextLink>
                 <NextLink href="/mint" passHref>
-                    <Link
+                    <Text
                         px={4}
                         py={4}
                         rounded="none"
@@ -66,10 +66,10 @@ export const NavBar = () => {
                         _hover={{textDecoration: "none", bg: "gray.100"}}
                     >
                         Publish Avator
-                    </Link>
+                    </Text>
                 </NextLink>
                 <NextLink href="/portfolio" passHref>
-                    <Link
+                    <Text
                         px={4}
                         py={4}
                         rounded="none"
@@ -79,7 +79,7 @@ export const NavBar = () => {
                         _hover={{textDecoration: "none", bg: "gray.100"}}
                     >
                         My Portfolio
-                    </Link>
+                    </Text>
                 </NextLink>
             </VStack>
             <WalletButtons/>
