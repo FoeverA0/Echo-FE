@@ -2,7 +2,7 @@
 
 import { AllNfts } from "@/components/AllNfts";
 import { ListedNfts } from "@/components/ListedNfts";
-import { Box, HStack, Heading, Radio, RadioGroup } from "@chakra-ui/react";
+import { HStack, Heading, Radio, RadioGroup } from "@chakra-ui/react";
 import { useState } from "react";
 
 export default function Page() {
