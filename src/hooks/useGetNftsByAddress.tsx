@@ -1,4 +1,4 @@
-import { getAptogotchi } from "@/utils/aptos";
+import {getAptogotchi, getListingObjectPrice} from "@/utils/aptos";
 import { AptogotchiWithTraits } from "@/utils/types";
 import { useEffect, useState } from "react";
 
