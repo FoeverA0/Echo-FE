@@ -16,11 +16,17 @@ export const WalletButtons = () => {
     return <Button onClick={disconnect}>Disconnect</Button>;
   }
 
-  if (isLoading || !wallets[0]) {
+  if (isLoading || !wallets || wallets.length === 0) {
     return <Text>Loading...</Text>;
   }
-
-  return <WalletView wallet={wallets[0]} />;
+  const wallet = wallets[0];
+  if (!("readyState" in wallet)) {
+    return <Text>Unsupported wallet type.</Text>;
+  }
+  if ("connect" in wallet && "disconnect" in wallet) {
+    return <WalletView wallet={wallet} />;
+  }
+  return <Text>Unsupported wallet type.</Text>;
 };
 
 const WalletView = ({ wallet }: { wallet: Wallet }) => {
