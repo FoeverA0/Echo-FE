@@ -12,24 +12,30 @@ export const ListedNfts = () => {
   useEffect(() => {
     if (listedNfts) {
       setIsLoading(false); // 数据加载完成后停止加载
+      // 将每个 NFT 的 price 存储到 localStorage
+      listedNfts.forEach((nft) => {
+        if (nft.price !== undefined) {
+          localStorage.setItem(`nftPrice_${nft.address}`, nft.price.toString());
+        }
+      });
     }
   }, [listedNfts]);
 
   return isLoading ? (
-      <Box textAlign="center" py={10}>
+    <Box textAlign="center" py={10}>
         <Loading /> {/* 显示加载动画 */}
-      </Box>
+    </Box>
   ) : listedNfts ? (
-      <SimpleGrid spacing={10} columns={3}>
-        {listedNfts.map((nft) => {
-          return (
-              <NftCard key={nft.address} nft={nft}>
-                <Buy listing={nft} />
-              </NftCard>
-          );
-        })}
-      </SimpleGrid>
+    <SimpleGrid spacing={10} columns={3}>
+      {listedNfts.map((nft) => {
+        return (
+          <NftCard key={nft.address} nft={nft}>
+            <Buy listing={nft} />
+          </NftCard>
+        );
+      })}
+    </SimpleGrid>
   ) : (
-      <></>
+    <></>
   );
 };

@@ -10,7 +10,6 @@ type Props = {
 
 export const Buy = ({ listing }: Props) => {
   const { account, signAndSubmitTransaction } = useWallet();
-
   const onSubmit = async () => {
     if (!account) {
       throw new Error("Wallet not connected");

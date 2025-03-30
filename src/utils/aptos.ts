@@ -21,7 +21,7 @@ export const aptos = new Aptos(config);
 export const getAptogotchi = async (
   aptogotchiObjectAddr: string
 ): Promise<[string, AptogotchiTraits]> => {
-  console.log("aptogotchiObjectAddr", aptogotchiObjectAddr);
+  //console.log("aptogotchiObjectAddr", aptogotchiObjectAddr);
   const aptogotchi = await aptos.view({
     payload: {
       function: `${APTOGOTCHI_CONTRACT_ADDRESS}::main::get_aptogotchi`,
@@ -29,7 +29,7 @@ export const getAptogotchi = async (
       functionArguments: [aptogotchiObjectAddr],
     },
   });
-  console.log(aptogotchi);
+  //console.log(aptogotchi);
   return [aptogotchi[0] as string, aptogotchi[1] as AptogotchiTraits];
 };
 
@@ -54,7 +54,7 @@ export const mintAptogotchi = async (
   const response = await aptos.waitForTransaction({
     transactionHash: pendingTxn.hash,
   });
-  console.log("minted aptogotchi. - ", response.hash);
+  //console.log("minted aptogotchi. - ", response.hash);
 };
 
 export const getAptBalance = async (addr: string) => {
@@ -63,7 +63,7 @@ export const getAptBalance = async (addr: string) => {
     coinType: APT,
   });
 
-  console.log("APT balance", result);
+  //console.log("APT balance", result);
   return result;
 };
 
@@ -75,7 +75,7 @@ export const getCollection = async () => {
     collectionName: COLLECTION_NAME,
     creatorAddress: COLLECTION_CREATOR_ADDRESS,
   });
-  console.log("collection", collection);
+  //console.log("collection", collection);
   return collection;
 };
 
@@ -85,7 +85,7 @@ export const getUserOwnedAptogotchis = async (ownerAddr: string) => {
     collectionAddress: COLLECTION_ID,
   });
 
-  console.log("my aptogotchis", result);
+  //console.log("my aptogotchis", result);
   return result;
 };
 
@@ -108,7 +108,7 @@ export const getAllAptogotchis = async () => {
     },
   });
 
-  console.log("all aptogotchis", result.current_token_datas_v2);
+  //("all aptogotchis", result.current_token_datas_v2);
   return result.current_token_datas_v2;
 };
 
@@ -131,7 +131,7 @@ export const listAptogotchi = async (
   const response = await aptos.waitForTransaction({
     transactionHash: pendingTxn.hash,
   });
-  console.log("listed aptogotchi. - ", response.hash);
+  //console.log("listed aptogotchi. - ", response.hash);
 };
 
 export const buyAptogotchi = async (
@@ -153,7 +153,7 @@ export const buyAptogotchi = async (
   const response = await aptos.waitForTransaction({
     transactionHash: pendingTxn.hash,
   });
-  console.log("bought aptogotchi. - ", response.hash);
+  //console.log("bought aptogotchi. - ", response.hash);
 };
 
 export const getAllListingObjectAddresses = async (sellerAddr: string) => {
@@ -164,7 +164,7 @@ export const getAllListingObjectAddresses = async (sellerAddr: string) => {
       functionArguments: [sellerAddr],
     },
   });
-  console.log("all listings", allListings);
+  //console.log("all listings", allListings);
   return allListings[0];
 };
 
@@ -176,7 +176,7 @@ export const getAllSellers = async () => {
       functionArguments: [],
     },
   });
-  console.log("all sellers", allSellers);
+  //console.log("all sellers", allSellers);
   return allSellers[0];
 };
 
@@ -190,7 +190,7 @@ export const getListingObjectAndSeller = async (
       functionArguments: [listingObjectAddr],
     },
   });
-  console.log("listing object and seller", listingObjectAndSeller);
+  //console.log("listing object and seller", listingObjectAndSeller);
   return [
     // @ts-ignore
     listingObjectAndSeller[0]["inner"] as string,
@@ -208,7 +208,7 @@ export const getListingObjectPrice = async (
       functionArguments: [listingObjectAddr],
     },
   });
-  console.log("listing object price", JSON.stringify(listingObjectPrice));
+  //console.log("listing object price", JSON.stringify(listingObjectPrice));
   // @ts-ignore
   return (listingObjectPrice[0]["vec"] as number) / APT_UNIT;
 };
