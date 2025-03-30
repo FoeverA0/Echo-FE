@@ -7,13 +7,13 @@ import {
   ListedAptogotchiWithTraits,
 } from "@/utils/types";
 import { ReactNode } from "react";
-
 type Props = {
   children?: ReactNode;
   nft: AptogotchiWithTraits | ListedAptogotchiWithTraits;
 };
 
 export const NftCard = ({ nft, children }: Props) => {
+
   const headUrl = BASE_PATH + "head.png";
   const bodyUrl = BASE_PATH + bodies[nft.body];
   const earUrl = BASE_PATH + ears[nft.ear];
@@ -37,32 +37,42 @@ export const NftCard = ({ nft, children }: Props) => {
   );
 
   return (
-    <Card>
-      <HStack
-        spacing={2}
-        flexDirection="column"
-        marginY={6}
-        marginX={4}
-        width={240}
-      >
-        {aptogotchiImage}
-        <Box display="flex" gap={2}>
-          <Text fontSize="xl">Name: </Text>
-          <Text fontSize="xl" fontWeight="bold">
-            {nft.name}
-          </Text>
-        </Box>
-        <Link
-          href={`https://explorer.aptoslabs.com/object/${nft.address}?network=testnet`}
-          rel="noopener noreferrer"
-          target="_blank"
+    <Link
+      href={`/nft/${nft.address}`}
+      passHref
+    >
+      <Card
+      sx={{
+        transition: "transform 0.2s, box-shadow 0.2s",
+        _hover: {
+          transform: "scale(1.05)",
+          boxShadow: "lg",
+        },}}>
+        <HStack
+          spacing={2}
+          flexDirection="column"
+          marginY={6}
+          marginX={4}
+          width={240}
         >
-          <Text fontSize="xs" color="GrayText">
-            View NFT on Explorer
-          </Text>
-        </Link>
-        <Box marginTop={6}>{children}</Box>
-      </HStack>
-    </Card>
+          {aptogotchiImage}
+          <Box display="flex" gap={2}>
+            <Text fontSize="xl" fontWeight="bold">
+              {nft.name}
+            </Text>
+          </Box>
+          <Link
+            href={`https://explorer.aptoslabs.com/object/${nft.address}?network=testnet`}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <Text fontSize="xs" color="GrayText">
+              View NFT on Explorer
+            </Text>
+          </Link>
+          <Box marginTop={6}>{children}</Box>
+        </HStack>
+      </Card>
+    </Link>
   );
 };
