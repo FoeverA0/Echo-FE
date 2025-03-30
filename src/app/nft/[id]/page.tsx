@@ -9,7 +9,7 @@ import {useEffect, useState} from "react";
 const NftDetails = () => {
     const params = useParams();
     const id = Array.isArray(params.id) ? params.id[0] : params.id;
-    const {nft, loading} = useGetNftsByAddress(id || "");
+    const {nft} = useGetNftsByAddress(id || "");
     const [price, setNftPrice] = useState<string | null>(null);
     const nftData = {
         id,
@@ -141,18 +141,16 @@ const NftDetails = () => {
                                     </Text>
                                 </VStack>
                             </Box>
-                            <VStack spacing={3} pt={2}>
-                                <Button colorScheme="blue" size="lg" width="full">
-                                    Buy now
-                                </Button>
-                                <Button variant="outline" size="lg" width="full">
-                                    Make offer
-                                </Button>
-                            </VStack>
-                            <Text fontSize="sm" color="gray.500">
-                                Supports creator This listing is paying the collection creator their suggested creator
-                                earnings.
-                            </Text>
+                            {price !== null && (
+                                <VStack spacing={3} pt={2}>
+                                    <Button colorScheme="blue" size="lg" width="full">
+                                        Buy now
+                                    </Button>
+                                    <Button variant="outline" size="lg" width="full">
+                                        Make offer
+                                    </Button>
+                                </VStack>
+                            )}
                         </VStack>
                     </VStack>
                 </GridItem>

@@ -1,112 +1,74 @@
-"use client";
+import { useState, useEffect } from "react";
+import { AptosClient } from "aptos";
+import { Button, Box, VStack, Text } from "@chakra-ui/react";
+import { FaWallet } from "react-icons/fa";
 
-import {
-  useWallet,
-  WalletReadyState,
-  Wallet,
-  isRedirectable,
-  WalletName,
-} from "@aptos-labs/wallet-adapter-react";
-import { Button, Text } from "@chakra-ui/react";
+const APTOS_NODE_URL = "https://fullnode.mainnet.aptoslabs.com";
+const client = new AptosClient(APTOS_NODE_URL);
 
-export const WalletButtons = () => {
-  const { wallets, connected, disconnect, isLoading } = useWallet();
+declare global {
+  interface Window {
+    aptos?: any;
+  }
+}
 
-  if (connected) {
-    return <Button onClick={disconnect}>Disconnect</Button>;
+export default function WalletButtons() {
+  const [account, setAccount] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    checkConnection();
+  }, []);
+
+  async function checkConnection() {
+    if (window.aptos) {
+      try {
+        const response = await window.aptos.account();
+        setAccount(response.address);
+      } catch (error) {
+        console.error("Not connected", error);
+      }
+    }
   }
 
-  if (isLoading || !wallets || wallets.length === 0) {
-    return <Text>Loading...</Text>;
-  }
-  const wallet = wallets[0];
-  if (!("readyState" in wallet)) {
-    return <Text>Unsupported wallet type.</Text>;
-  }
-  if ("connect" in wallet && "disconnect" in wallet) {
-    return <WalletView wallet={wallet} />;
-  }
-  return <Text>Unsupported wallet type.</Text>;
-};
-
-const WalletView = ({ wallet }: { wallet: Wallet }) => {
-  const { connect } = useWallet();
-  const isWalletReady =
-    wallet.readyState === WalletReadyState.Installed ||
-    wallet.readyState === WalletReadyState.Loadable;
-  const mobileSupport = wallet.deeplinkProvider;
-
-  const onWalletConnectRequest = async (walletName: WalletName) => {
+  async function connectWallet() {
+    if (!window.aptos) {
+      alert("Please install a compatible Aptos wallet.");
+      return;
+    }
+    setLoading(true);
     try {
-      connect(walletName);
+      const response = await window.aptos.connect();
+      setAccount(response.address);
     } catch (error) {
-      console.warn(error);
-      window.alert("Failed to connect wallet");
+      console.error("Connection failed", error);
     }
-  };
-
-  /**
-   * If we are on a mobile browser, adapter checks whether a wallet has a `deeplinkProvider` property
-   * a. If it does, on connect it should redirect the user to the app by using the wallet's deeplink url
-   * b. If it does not, up to the dapp to choose on the UI, but can simply disable the button
-   * c. If we are already in a in-app browser, we don't want to redirect anywhere, so connect should work as expected in the mobile app.
-   *
-   * !isWalletReady - ignore installed/sdk wallets that don't rely on window injection
-   * isRedirectable() - are we on mobile AND not in an in-app browser
-   * mobileSupport - does wallet have deeplinkProvider property? i.e does it support a mobile app
-   */
-  if (!isWalletReady && isRedirectable()) {
-    // wallet has mobile app
-    if (mobileSupport) {
-      return (
-        // <button
-        //   className={cn(buttonStyles, "hover:bg-blue-700")}
-        //   disabled={false}
-        //   key={wallet.name}
-        //   onClick={() => onWalletConnectRequest(wallet.name)}
-        //   style={{ maxWidth: "300px" }}
-        // >
-        //   Connect Wallet
-        // </button>
-        <Button onClick={() => onWalletConnectRequest(wallet.name)}>
-          Connect Wallet
-        </Button>
-      );
-    }
-    // wallet does not have mobile app
-    return (
-      // <button
-      //   className={cn(buttonStyles, "opacity-50 cursor-not-allowed")}
-      //   disabled={true}
-      //   key={wallet.name}
-      //   style={{ maxWidth: "300px" }}
-      // >
-      //   Connect Wallet - Desktop Only
-      // </button>
-      <Button isDisabled={true}>Connect Wallet - Desktop Only</Button>
-    );
-  } else {
-    // desktop
-    return (
-      // <button
-      //   className={cn(
-      //     buttonStyles,
-      //     isWalletReady ? "hover:bg-blue-700" : "opacity-50 cursor-not-allowed"
-      //   )}
-      //   disabled={!isWalletReady}
-      //   key={wallet.name}
-      //   onClick={() => onWalletConnectRequest(wallet.name)}
-      //   style={{ maxWidth: "300px" }}
-      // >
-      //   Connect Wallet
-      // </button>
-      <Button
-        _hover={{ bg: "cyan.600" }}
-        isDisabled={!isWalletReady}
-        onClick={() => onWalletConnectRequest(wallet.name)}
-      >
-        Connect Wallet
-      </Button>
-    );
+    setLoading(false);
   }
-};
+
+  async function disconnectWallet() {
+    if (window.aptos) {
+      await window.aptos.disconnect();
+      setAccount(null);
+    }
+  }
+
+  return (
+      <Box p={4} borderRadius="md" boxShadow="md" bg="gray.700" color="white" textAlign="center" w="full" maxW="sm">
+        <VStack spacing={4}>
+          <Text fontSize="lg" fontWeight="bold">
+            {account ? `Connected: ${account.slice(0, 6)}...${account.slice(-4)}` : "Aptos Wallet"}
+          </Text>
+          {account ? (
+              <Button onClick={disconnectWallet} colorScheme="red" leftIcon={<FaWallet />}>
+                Disconnect
+              </Button>
+          ) : (
+              <Button onClick={connectWallet} isLoading={loading} colorScheme="blue" leftIcon={<FaWallet />}>
+                Connect Wallet
+              </Button>
+          )}
+        </VStack>
+      </Box>
+  );
+}
