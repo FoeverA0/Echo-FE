@@ -2,6 +2,7 @@
 
 import { Network, NetworkToChainId } from "@aptos-labs/ts-sdk";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
+import { useKeylessAccount } from "@/context/KeylessAccountContext";
 import {
   Alert,
   AlertIcon,
@@ -29,8 +30,8 @@ export default function Page() {
 
 function PageContent() {
   const { connected, network } = useWallet();
-
-  if (!connected) {
+  const { keylessAccount, setKeylessAccount } = useKeylessAccount();
+  if (!keylessAccount) {
     return (
       <Alert status="warning" variant="left-accent" marginY={8}>
         <AlertIcon />
@@ -39,14 +40,14 @@ function PageContent() {
     );
   }
 
-  if (network?.chainId != NetworkToChainId[Network.TESTNET].toString()) {
-    return (
-      <Alert status="info" variant="left-accent" marginY={8}>
-        <AlertIcon />
-        Please Connect to Testnet.
-      </Alert>
-    );
-  }
+  // if (network?.chainId != NetworkToChainId[Network.TESTNET].toString()) {
+  //   return (
+  //     <Alert status="info" variant="left-accent" marginY={8}>
+  //       <AlertIcon />
+  //       Please Connect to Testnet.
+  //     </Alert>
+  //   );
+  // }
 
   return <Mint />;
 }
