@@ -35,7 +35,7 @@ import { aptosClient } from "@/utils/aptosClient";
 // Entry functions
 import { createAsset } from "@/entry-functions/create_asset";
 // Example of a custom Header component in Chakra (optional)
-import { Header } from "@/components/Header";
+import { Header } from "@/components/Navbar";
 
 export function CreateFungibleAsset() {
   // Wallet Adapter provider
