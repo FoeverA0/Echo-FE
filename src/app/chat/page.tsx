@@ -1,26 +1,63 @@
 "use client";
 
 import { Box, Button, Flex, Input, Select, Text, VStack, Textarea } from "@chakra-ui/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChatInput } from "../../components/ChatInput";
+import { useSearchParams } from "next/navigation";
+import { searchQuery } from "@/utils/api";
+import { useRetrievedLines } from "@/context/RetrievedLinesContext";
 
 export default function ChatPage() {
   const [messages, setMessages] = useState<{ user: string; llm: string }[]>([]);
   const [input, setInput] = useState("");
   const [selectedKnowledgeBase, setSelectedKnowledgeBase] = useState("");
   const [inputHeight, setInputHeight] = useState(60); // 初始高度为 60px
+  const searchParams = useSearchParams();
+  const { setRetrievedLines } = useRetrievedLines(); // 使用全局状态
+  const [hasSentInitialQuery, setHasSentInitialQuery] = useState(false); // 添加状态
+  const [query, setQuery] = useState<string | null>(null); // 独立的 query 状态
 
-  const handleSendMessage = () => {
-    if (!input.trim()) return;
+  useEffect(() => {
+    const currentQuery = searchParams.get("query");
+    if (currentQuery && currentQuery !== query) {
+      setQuery(currentQuery);
+    }
+  }, [searchParams, query]);
 
-    // 模拟 LLM 回复
-    const llmResponse = `这是对 "${input}" 的回复。`;
-    
-    // 更新消息列表
-    setMessages((prev) => [...prev, { user: input, llm: llmResponse }]);
+  useEffect(() => {
+    if (query && !hasSentInitialQuery) {
+      handleSendMessage(query);
+      setHasSentInitialQuery(true);
+    }
+  }, [query, hasSentInitialQuery]);
 
-    // 清空输入框
-    setInput("");
+  const handleSendMessage = async (message: string) => {
+    if (!message.trim()) return;
+
+    // 添加用户消息到聊天记录
+    setMessages((prev) => [...prev, { user: message, llm: "Loading..." }]);
+
+    try {
+      // 调用后端接口
+      const response = await searchQuery(message, selectedKnowledgeBase);
+
+      // 更新 LLM 回复
+      setMessages((prev) => {
+        const updatedMessages = [...prev];
+        updatedMessages[updatedMessages.length - 1].llm = response.answer;
+        return updatedMessages;
+      });
+      // 更新检索到的行到全局状态
+      setRetrievedLines(response.retrieved_lines);
+    } catch (error: any) {
+      console.error("Error fetching LLM response:", error);
+      setMessages((prev) => {
+        const updatedMessages = [...prev];
+        updatedMessages[updatedMessages.length - 1].llm =
+          "Failed to fetch response. Please try again.";
+        return updatedMessages;
+      });
+    }
   };
 
   return (
@@ -75,7 +112,7 @@ export default function ChatPage() {
         setInput={setInput}
         selectedKnowledgeBase={selectedKnowledgeBase}
         setSelectedKnowledgeBase={setSelectedKnowledgeBase}
-        handleSendMessage={handleSendMessage}
+        handleSendMessage={() => handleSendMessage(input)}
       />
     </Flex>
   );

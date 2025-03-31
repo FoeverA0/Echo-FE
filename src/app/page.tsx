@@ -9,7 +9,15 @@ export default function Page() {
   const [question, setQuestion] = useState("");
   const [selectedKnowledgeBase, setSelectedKnowledgeBase] = useState("");
   const router = useRouter();
-
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault(); // 阻止默认的换行行为
+      if (question.trim()) {
+        // 跳转到 /chat 页面并传递查询内容
+        router.push(`/chat?query=${encodeURIComponent(question)}`);
+      }
+    }
+  };
   return (
     <Flex
       flexDirection="column"
@@ -39,6 +47,7 @@ export default function Page() {
           placeholder="Start asking questions here..."
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
+          onKeyDown={handleKeyDown}
           size="md"
           bg="white" // 输入框背景为白色
           color="gray.800" // 输入框字体颜色为深灰色
@@ -57,9 +66,7 @@ export default function Page() {
           _hover={{ borderColor: "cyan.500" }}
           size="md"
         >
-          <option value="knowledge-base-1">知识库 1</option>
-          <option value="knowledge-base-2">知识库 2</option>
-          <option value="knowledge-base-3">知识库 3</option>
+          <option value="knowledge-base-1">Phala</option>
         </Select>
       </Box>
       <Box width="100%" maxWidth="1200px" mb={4}>
