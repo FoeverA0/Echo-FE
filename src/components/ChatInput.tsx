@@ -17,6 +17,12 @@ export const ChatInput = ({
   handleSendMessage,
 }: ChatInputProps) => {
   const [inputHeight, setInputHeight] = useState(60); // 初始高度为 60px
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
 
   return (
     <Flex
@@ -46,7 +52,7 @@ export const ChatInput = ({
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault(); // 阻止默认的换行行为
-              handleSendMessage(); // 发送消息
+              handleKeyDown; // 发送消息
             }
           }}
           onInput={(e) => {
@@ -74,7 +80,7 @@ export const ChatInput = ({
       {/* 第二行：选择框和发送按钮 */}
       <Flex justify="flex-end" align="center" gap={4} width="100%">
         <Select
-          placeholder="Choose a knowledge base"
+          placeholder="Phala"
           value={selectedKnowledgeBase}
           onChange={(e) => setSelectedKnowledgeBase(e.target.value)}
           bg="gray.100"
@@ -82,9 +88,7 @@ export const ChatInput = ({
           _focus={{ borderColor: "cyan.400" }}
           width="200px"
         >
-          <option value="knowledge-base-1">知识库 1</option>
-          <option value="knowledge-base-2">知识库 2</option>
-          <option value="knowledge-base-3">知识库 3</option>
+          <option value="knowledge-base-1">Phala</option>
         </Select>
         <Button colorScheme="cyan" onClick={handleSendMessage}>
           Send

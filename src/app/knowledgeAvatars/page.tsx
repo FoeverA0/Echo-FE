@@ -13,7 +13,7 @@ export default function Page() {
   return (
     <HStack flexDirection="column">
       <Heading margin={4} textAlign="center">
-        Aptogotchi NFTs
+        Knowledge Avatars NFTs
       </Heading>
       <RadioGroup defaultValue="All NFTs" margin={4}>
         <HStack justifyContent="center">

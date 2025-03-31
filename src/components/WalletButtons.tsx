@@ -1,74 +1,101 @@
-import { useState, useEffect } from "react";
-import { AptosClient } from "aptos";
-import { Button, Box, VStack, Text } from "@chakra-ui/react";
-import { FaWallet } from "react-icons/fa";
+"use client";
 
-const APTOS_NODE_URL = "https://fullnode.mainnet.aptoslabs.com";
-const client = new AptosClient(APTOS_NODE_URL);
+import GoogleLogo from "./GoogleLogo";
+import useEphemeralKeyPair from "@/hooks/useEphemeralKeyPair";
+import { useKeylessAccount } from "@/context/KeylessAccountContext";
+import { collapseAddress } from "@/utils/address";
+import { toast } from "sonner";
+import { Button, Box, Text, Flex } from "@chakra-ui/react";
 
-declare global {
-  interface Window {
-    aptos?: any;
-  }
-}
+
+const buttonStyles =
+  "nes-btn flex items-center justify-center md:gap-4 py-2 flex-nowrap whitespace-nowrap";
 
 export default function WalletButtons() {
-  const [account, setAccount] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    checkConnection();
-  }, []);
-
-  async function checkConnection() {
-    if (window.aptos) {
-      try {
-        const response = await window.aptos.account();
-        setAccount(response.address);
-      } catch (error) {
-        console.error("Not connected", error);
-      }
-    }
+  if (!process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID) {
+    throw new Error("Google Client ID is not set in env");
   }
 
-  async function connectWallet() {
-    if (!window.aptos) {
-      alert("Please install a compatible Aptos wallet.");
-      return;
-    }
-    setLoading(true);
-    try {
-      const response = await window.aptos.connect();
-      setAccount(response.address);
-    } catch (error) {
-      console.error("Connection failed", error);
-    }
-    setLoading(false);
-  }
+  const { keylessAccount, setKeylessAccount } = useKeylessAccount();
+  const ephemeralKeyPair = useEphemeralKeyPair();
 
-  async function disconnectWallet() {
-    if (window.aptos) {
-      await window.aptos.disconnect();
-      setAccount(null);
-    }
-  }
+  const redirectUrl = new URL("https://accounts.google.com/o/oauth2/v2/auth");
+  const searchParams = new URLSearchParams({
+    /**
+     * Replace with your own client ID
+     */
+    client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+    /**
+     * The redirect_uri must be registered in the Google Developer Console. This callback page
+     * parses the id_token from the URL fragment and combines it with the ephemeral key pair to
+     * derive the keyless account.
+     */
+    redirect_uri:
+      typeof window !== "undefined"
+        ? `${window.location.origin}/callback`
+        : (process.env.NODE_ENV === "development"
+            ? "http://localhost:3000"
+            : process.env.NEXT_PUBLIC_VERCEL_URL) + "/callback",
+    /**
+     * This uses the OpenID Connect implicit flow to return an id_token. This is recommended
+     * for SPAs (single-page applications) as it does not require a backend server.
+     */
+    response_type: "id_token",
+    scope: "openid email profile",
+    nonce: ephemeralKeyPair.nonce,
+  });
+  redirectUrl.search = searchParams.toString();
+
+  const disconnect = () => {
+    setKeylessAccount(null);
+    toast.success("Successfully disconnected account");
+  };
 
   return (
-      <Box p={4} borderRadius="md" boxShadow="md" bg="gray.700" color="white" textAlign="center" w="full" maxW="sm">
-        <VStack spacing={4}>
-          <Text fontSize="lg" fontWeight="bold">
-            {account ? `Connected: ${account.slice(0, 6)}...${account.slice(-4)}` : "Aptos Wallet"}
+    <Flex
+      // justify="center"
+      // align="center"
+      // position="fixed" // 固定位置
+      // bottom="0" // 放置在页面底部
+      // left="0"
+      // width="100%" // 占满宽度
+      // bg="white" // 背景颜色
+      // p={3} // 内边距
+      zIndex="1000" // 确保在最顶层
+    >
+      {keylessAccount ? (
+        <Button
+          onClick={disconnect}
+          title="Disconnect Wallet"
+          bg="gray.700"
+          color="white"
+          _hover={{ bg: "gray.600" }}
+          leftIcon={<GoogleLogo />}
+          borderRadius="md"
+          px={10}
+          py={4}
+          boxShadow="0 -2px 5px rgba(0, 0, 0, 0.1)" // 添加顶部阴影
+        >
+          <Text isTruncated title={keylessAccount.accountAddress.toString()}>
+            {collapseAddress(keylessAccount.accountAddress.toString())}
           </Text>
-          {account ? (
-              <Button onClick={disconnectWallet} colorScheme="red" leftIcon={<FaWallet />}>
-                Disconnect
-              </Button>
-          ) : (
-              <Button onClick={connectWallet} isLoading={loading} colorScheme="blue" leftIcon={<FaWallet />}>
-                Connect Wallet
-              </Button>
-          )}
-        </VStack>
-      </Box>
+        </Button>
+      ) : (
+        <a href={redirectUrl.toString()} style={{ textDecoration: "none" }}>
+          <Button
+            bg="gray.700"
+            color="white"
+            _hover={{ bg: "cyan.600" }}
+            leftIcon={<GoogleLogo />}
+            borderRadius="md"
+            px={5}
+            py={4}
+            boxShadow="0 -2px 5px rgba(0, 0, 0, 0.1)" // 添加顶部阴影
+          >
+            <Text>Sign in with Google</Text>
+          </Button>
+        </a>
+      )}
+    </Flex>
   );
 }
