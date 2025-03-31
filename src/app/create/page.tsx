@@ -2,7 +2,7 @@ import { isAptosConnectWallet, useWallet } from "@aptos-labs/wallet-adapter-reac
 import { Link, useNavigate } from "react-router-dom";
 import { useRef, useState } from "react";
 // Internal components
-
+import { Button, HStack } from "@chakra-ui/react"
 
 export function CreateFungibleAsset() {
   // Wallet Adapter provider
