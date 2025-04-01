@@ -6,13 +6,28 @@ import { ChatInput } from "../../components/ChatInput";
 import { useSearchParams } from "next/navigation";
 import { searchQuery } from "@/utils/api";
 import { useRetrievedLines } from "@/context/RetrievedLinesContext";
+import { Suspense } from 'react'
+import Loading from "@/components/loading"; // 引入加载动画组件
+
+const QueryHandler = ({
+  setQuery,
+}: {
+  setQuery: (query: string | null) => void;
+}) => {
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const currentQuery = searchParams.get("query");
+    setQuery(currentQuery);
+  }, [searchParams, setQuery]);
+
+  return null; // 这个组件只负责处理逻辑，不渲染任何内容
+};
 
 export default function ChatPage() {
   const [messages, setMessages] = useState<{ user: string; llm: string }[]>([]);
   const [input, setInput] = useState("");
   const [selectedKnowledgeBase, setSelectedKnowledgeBase] = useState("");
-  const [inputHeight, setInputHeight] = useState(60); // 初始高度为 60px
-  const searchParams = useSearchParams();
   const { setRetrievedLines } = useRetrievedLines(); // 使用全局状态
   const [hasSentInitialQuery, setHasSentInitialQuery] = useState(false); // 添加状态
   const [query, setQuery] = useState<string | null>(null); // 独立的 query 状态
@@ -27,12 +42,6 @@ export default function ChatPage() {
       document.documentElement.style.overflow = "";
     };
   }, []);
-  useEffect(() => {
-    const currentQuery = searchParams.get("query");
-    if (currentQuery && currentQuery !== query) {
-      setQuery(currentQuery);
-    }
-  }, [searchParams, query]);
 
   useEffect(() => {
     if (query && !hasSentInitialQuery) {
@@ -72,6 +81,9 @@ export default function ChatPage() {
 
   return (
     <Flex direction="column" height="100vh" bg="white" overflow="hidden">
+      <Suspense fallback={<Loading />}>
+        <QueryHandler setQuery={setQuery} />
+      </Suspense>
     {/* 聊天内容区域 */}
     <VStack
         flex={1} // 让聊天内容区域占据剩余空间
