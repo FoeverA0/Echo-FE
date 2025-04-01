@@ -64,7 +64,10 @@ export const NftCard = ({ nft, children }: Props) => {
               target="_blank"
             >
               <Text fontSize="sm" color="GrayText">
-                View NFT on Explorer
+                Owner: testOwner
+              </Text>
+              <Text fontSize="md" color="GrayText">
+                Brief of NFT
               </Text>
             </Link>
             <Box marginTop={4}>{children}</Box>
