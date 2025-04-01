@@ -28,7 +28,6 @@
 //   ModalBody,
 //   ModalFooter,
 // } from "@chakra-ui/react";
-
 // // Internal utils
 // import { checkIfFund, uploadFile } from "@/utils/Irys";
 // import { aptosClient } from "@/utils/aptosClient";

@@ -26,7 +26,7 @@ export const ListedNfts = () => {
         <Loading /> {/* 显示加载动画 */}
     </Box>
   ) : listedNfts ? (
-    <SimpleGrid spacing={10} columns={4}>
+    <SimpleGrid spacing={10} columns={3}>
       {listedNfts.map((nft) => {
         return (
           <NftCard key={nft.address} nft={nft}>

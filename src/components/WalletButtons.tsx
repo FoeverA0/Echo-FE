@@ -67,7 +67,7 @@ export default function WalletButtons() {
         <Button
           onClick={disconnect}
           title="Disconnect Wallet"
-          bg="gray.700"
+          bg="gray.800"
           color="white"
           _hover={{ bg: "gray.600" }}
           leftIcon={<GoogleLogo />}
@@ -83,7 +83,7 @@ export default function WalletButtons() {
       ) : (
         <a href={redirectUrl.toString()} style={{ textDecoration: "none" }}>
           <Button
-            bg="gray.700"
+            bg="gray.800"
             color="white"
             _hover={{ bg: "cyan.600" }}
             leftIcon={<GoogleLogo />}
