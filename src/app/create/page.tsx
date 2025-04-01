@@ -1,6 +1,7 @@
+"use client";
 import { isAptosConnectWallet, useWallet } from "@aptos-labs/wallet-adapter-react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import { useRef, useState } from "react";
+import { use, useRef, useState } from "react";
 import {
   Alert,
   AlertIcon,

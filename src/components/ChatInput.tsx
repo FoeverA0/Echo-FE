@@ -21,6 +21,7 @@ export const ChatInput = ({
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
+      setInput(""); // 清空输入框
     }
   };
 
@@ -35,12 +36,12 @@ export const ChatInput = ({
       gap={4}
       position="fixed" // 固定在视口底部
       bottom={4} // 距离视口底部 4 单位（约 16px）
-      left="50%" // 水平居中
-      transform="translateX(-50%)" // 水平居中调整
+      left="calc(50% + 120px)" // 考虑导航栏宽度，水平居中
+      transform="translateX(-50%)" // 调整居中偏移
       width="50rem" // 设置固定宽度
       zIndex={10} // 确保在其他内容之上
       boxShadow="md" // 添加阴影效果
-      style={{ height: `${Math.min(250, Math.max(110, inputHeight + 110))}px` }} // 动态调整高度
+      style={{ height: `${Math.min(230, Math.max(90, inputHeight + 90))}px` }} // 动态调整高度
     >
       {/* 第一行：输入框 */}
       <Flex align="center" gap={4}>
@@ -49,12 +50,7 @@ export const ChatInput = ({
           placeholder="Start a new chat"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) {
-              e.preventDefault(); // 阻止默认的换行行为
-              handleKeyDown; // 发送消息
-            }
-          }}
+          onKeyDown={handleKeyDown}
           onInput={(e) => {
             const target = e.target as HTMLTextAreaElement;
             target.style.height = "auto"; // 重置高度
@@ -90,7 +86,10 @@ export const ChatInput = ({
         >
           <option value="knowledge-base-1">Phala</option>
         </Select>
-        <Button colorScheme="cyan" onClick={handleSendMessage}>
+        <Button colorScheme="cyan" onClick={() => {
+            handleSendMessage();
+            setInput(""); // 清空输入框
+          }}>
           Send
         </Button>
       </Flex>

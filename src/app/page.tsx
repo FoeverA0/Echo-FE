@@ -69,14 +69,14 @@ export default function Page() {
           <option value="knowledge-base-1">Phala</option>
         </Select>
       </Box>
-      <Box width="100%" maxWidth="1200px" mb={4}>
+      <Box width="100%" mb={4}>
         <Heading as="h2" size="md" color="gray.600" fontWeight="semibold" textAlign="left">
           Knowledge Avatars
         </Heading>
       </Box>
       {/* NFT 显示组件 */}
-      <Box width="100%" maxWidth="1200px" mb={6}>
-        <AllNfts limit={8} />
+      <Box width="100%"  mb={6}>
+        <AllNfts limit={6} />
       </Box>
 
       {/* 查看全部按钮 */}
