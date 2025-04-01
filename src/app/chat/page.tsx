@@ -16,7 +16,17 @@ export default function ChatPage() {
   const { setRetrievedLines } = useRetrievedLines(); // 使用全局状态
   const [hasSentInitialQuery, setHasSentInitialQuery] = useState(false); // 添加状态
   const [query, setQuery] = useState<string | null>(null); // 独立的 query 状态
+  useEffect(() => {
+    // 禁用页面滚动
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
 
+    // 清理样式
+    return () => {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+    };
+  }, []);
   useEffect(() => {
     const currentQuery = searchParams.get("query");
     if (currentQuery && currentQuery !== query) {
@@ -61,25 +71,28 @@ export default function ChatPage() {
   };
 
   return (
-    <Flex direction="column" height="100vh" bg="gray.50">
+    <Flex direction="column" height="100vh" bg="white" overflow="hidden">
     {/* 聊天内容区域 */}
     <VStack
         flex={1} // 让聊天内容区域占据剩余空间
         overflowY="auto" // 启用垂直滚动
         spacing={4}
         p={4}
-        align="stretch"
+        pb={100}
+        align="center"
         bg="white"
-        borderBottom="1px solid #E2E8F0"
+        // borderBottom="1px solid #E2E8F0"
+        maxHeight={"calc(100vh - 230px)"} // 限制最大高度
+        width={"100%"} // 设置宽度为 100%
     >
         {messages.map((message, index) => (
-        <Flex key={index} direction="column" gap={2}>
+        <Flex key={index} direction="column" gap={2} width={"75%"}>
             {/* 用户消息 */}
             <Flex justify="flex-end">
             <Box
                 bg="cyan.100"
                 color="gray.800"
-                px={4}
+                px={5}
                 py={2}
                 borderRadius="md"
                 maxWidth="70%"
@@ -96,7 +109,7 @@ export default function ChatPage() {
                 px={4}
                 py={2}
                 borderRadius="md"
-                maxWidth="70%"
+                maxWidth="100%"
                 textAlign="left"
             >
                 {message.llm}

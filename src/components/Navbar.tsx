@@ -9,7 +9,7 @@ export const NavBar = () => {
     const router = useRouter();
     const pathname = usePathname(); // 获取当前路径
     const { retrievedLines, setRetrievedLines } = useRetrievedLines(); // 获取和设置检索到的行
-    const MAX_LINES = 3;
+    const MAX_LINES = 5;
     const isChatPage = pathname === "/chat"; // 判断是否为 chat 页面
       // 清空检索到的行，当路径不为 /chat 时
     useEffect(() => {
@@ -75,7 +75,7 @@ export const NavBar = () => {
                             color="gray.700"
                             fontWeight="medium"
                             mb={2}
-                            noOfLines={2} // 限制每行显示的最大行数
+                            noOfLines={4} // 限制每行显示的最大行数
                         >
                             {line.text}
                         </Text>

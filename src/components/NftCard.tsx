@@ -20,57 +20,55 @@ export const NftCard = ({ nft, children }: Props) => {
   const faceUrl = BASE_PATH + faces[nft.face];
 
   const aptogotchiImage = (
-    <Box position={"relative"} height="100px" width="100px">
+    <Box position={"relative"} height="150px" width="150px">
       <Box position={"absolute"} top={"0px"} left={"0px"}>
-        <Image src={headUrl} alt="pet head" height="100" width="100" />
+        <Image src={headUrl} alt="pet head" height="150" width="150" />
       </Box>
       <Box position={"absolute"} top={"0px"} left={"0px"}>
-        <Image src={bodyUrl} alt="pet body" height="100" width="100" />
+        <Image src={bodyUrl} alt="pet body" height="150" width="150" />
       </Box>
       <Box position={"absolute"} top={"0px"} left={"0px"}>
-        <Image src={earUrl} alt="pet ears" height="100" width="100" />
+        <Image src={earUrl} alt="pet ears" height="150" width="150" />
       </Box>
       <Box position={"absolute"} top={"0px"} left={"0px"}>
-        <Image src={faceUrl} alt="pet face" height="100" width="100" />
+        <Image src={faceUrl} alt="pet face" height="150" width="150" />
       </Box>
     </Box>
   );
 
   return (
-    <Link
-      href={`/nft/${nft.address}`}
-      passHref
-    >
+    <Link href={`/nft/${nft.address}`} passHref>
       <Card
-      sx={{
-        transition: "transform 0.2s, box-shadow 0.2s",
-        _hover: {
-          transform: "scale(1.05)",
-          boxShadow: "lg",
-        },}}>
-        <HStack
-          spacing={2}
-          flexDirection="column"
-          marginY={6}
-          marginX={4}
-          width={240}
-        >
+        sx={{
+          transition: "transform 0.2s, box-shadow 0.2s",
+          _hover: {
+            transform: "scale(1.05)",
+            boxShadow: "lg",
+          },
+        }}
+        padding={4}
+        minHeight="150px"
+      >
+        <HStack spacing={4} align="center">
+          {/* 左侧：图片 */}
           {aptogotchiImage}
-          <Box display="flex" gap={2}>
-            <Text fontSize="xl" fontWeight="bold">
+
+          {/* 右侧：名字和信息 */}
+          <Box flex={1}>
+            <Text fontSize="xl" fontWeight="bold" marginBottom={2}>
               {nft.name}
             </Text>
+            <Link
+              href={`https://explorer.aptoslabs.com/object/${nft.address}?network=testnet`}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              <Text fontSize="sm" color="GrayText">
+                View NFT on Explorer
+              </Text>
+            </Link>
+            <Box marginTop={4}>{children}</Box>
           </Box>
-          <Link
-            href={`https://explorer.aptoslabs.com/object/${nft.address}?network=testnet`}
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            <Text fontSize="xs" color="GrayText">
-              View NFT on Explorer
-            </Text>
-          </Link>
-          <Box marginTop={6}>{children}</Box>
         </HStack>
       </Card>
     </Link>
