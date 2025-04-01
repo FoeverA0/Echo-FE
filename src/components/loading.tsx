@@ -1,3 +1,4 @@
+"use client";
 import { Flex, Box } from "@chakra-ui/react";
 import { keyframes } from "@emotion/react"; // 从 @emotion/react 导入 keyframes
 
