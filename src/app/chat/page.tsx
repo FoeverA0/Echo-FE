@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Button, Flex, Input, Select, Text, VStack, Textarea } from "@chakra-ui/react";
+import { Box, Flex, Select, Text, VStack } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { ChatInput } from "../../components/ChatInput";
 import { useSearchParams } from "next/navigation";
