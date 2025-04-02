@@ -32,7 +32,7 @@ export const Portfolio = ({ address }: Props) => {
         flexDirection="column"
       >
         <Text fontSize="xl" fontWeight="bold" textAlign="center" marginY={4}>
-          NFTs
+            NFTs
         </Text>
         {nftsInWallet && nftsInWallet.length > 0 ? (
           <SimpleGrid spacing={10} columns={3}>
