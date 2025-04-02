@@ -5,10 +5,12 @@ import NextLink from "next/link";
 import WalletButtons from "./WalletButtons";
 import {useRouter, usePathname} from "next/navigation";
 import { useRetrievedLines } from "@/context/RetrievedLinesContext";
+import { useKeylessAccount } from "@/context/KeylessAccountContext";
 export const NavBar = () => {
     const router = useRouter();
     const pathname = usePathname(); // 获取当前路径
     const { retrievedLines, setRetrievedLines } = useRetrievedLines(); // 获取和设置检索到的行
+    const { keylessAccount, setKeylessAccount } = useKeylessAccount();
     const MAX_LINES = 5;
     const isChatPage = pathname === "/chat"; // 判断是否为 chat 页面
       // 清空检索到的行，当路径不为 /chat 时
@@ -125,7 +127,7 @@ export const NavBar = () => {
                         Publish Avatar
                         </Text>
                     </NextLink>
-                    <NextLink href="/portfolio" passHref>
+                    <NextLink href={`/portfolio/${keylessAccount?.accountAddress.toString()}`} passHref>
                         <Text
                         px={4}
                         py={4}

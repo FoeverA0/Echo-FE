@@ -32,7 +32,7 @@ export const Portfolio = ({ address }: Props) => {
         flexDirection="column"
       >
         <Text fontSize="xl" fontWeight="bold" textAlign="center" marginY={4}>
-          My NFTs
+          NFTs
         </Text>
         {nftsInWallet && nftsInWallet.length > 0 ? (
           <SimpleGrid spacing={10} columns={3}>
@@ -51,7 +51,7 @@ export const Portfolio = ({ address }: Props) => {
       <Divider />
       <HStack marginY={12} justifyContent="center" flexDirection="column">
         <Text fontSize="xl" fontWeight="bold" textAlign="center" marginY={4}>
-          My NFT Listings
+          NFT Listings
         </Text>
         {nftsListed &&
           (nftsListed.length > 0 ? (
