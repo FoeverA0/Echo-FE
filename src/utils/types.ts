@@ -1,6 +1,12 @@
 export type Aptogotchi = {
   name: string;
   address: string;
+  description: string;
+  documents: DocumentInfo[];
+  change_log: ChangeLog[];
+  whitelist: string[];
+  coin_type: string;
+  owner: string;
 };
 
 export type AptogotchiTraits = {
@@ -15,7 +21,19 @@ export type Listing = {
   seller_address: string;
 };
 
-export type AptogotchiWithTraits = Aptogotchi & AptogotchiTraits & Listing;
+export type DocumentInfo = {
+  name: string;
+  hash: string;
+  size: number;
+}
+
+export type ChangeLog = {
+  action: number;
+  doc_info: DocumentInfo;
+  timestamp: number;
+}
+
+export type AptogotchiWithTraits = Aptogotchi & AptogotchiTraits;
 export type ListedAptogotchiWithTraits = Aptogotchi &
   AptogotchiTraits &
   Listing;
