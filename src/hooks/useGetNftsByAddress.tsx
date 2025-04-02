@@ -12,10 +12,16 @@ export const useGetNftsByAddress = (nftAddress: string) => {
     const fetchNft = async () => {
       setLoading(true);
       try {
-        const [name, traits] = await getAptogotchi(nftAddress);
+        const [name, traits, description, documents, change_log, whitelist, coin_type, owner] = await getAptogotchi(nftAddress);
         setNft({
           name: name || "Unnamed NFT", // 确保包含 name 属性
           address: nftAddress,
+          description,
+          documents,
+          change_log,
+          whitelist,
+          coin_type,
+          owner,
           ...traits,
         });
       } catch (error) {

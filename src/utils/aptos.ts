@@ -1,100 +1,107 @@
-import { Aptos, AptosConfig, Network, Account } from "@aptos-labs/ts-sdk";
-import { Aptogotchi, AptogotchiTraits } from "./types";
+import {Aptos, AptosConfig, Network, Account} from "@aptos-labs/ts-sdk";
+import {Aptogotchi, AptogotchiTraits, ChangeLog, DocumentInfo} from "./types";
 
 export const APTOGOTCHI_CONTRACT_ADDRESS =
-  "0x497c93ccd5d3c3e24a8226d320ecc9c69697c0dad5e1f195553d7eaa1140e91f";
+    "0x7f6b2f15251c366407f67a888e7db74b5ae1b723a014bcbfcaa877cdcb9d7a0d";
 export const COLLECTION_ID =
-  "0xfce62045f3ac19160c1e88662682ccb6ef1173eba82638b8bae172cc83d8e8b8";
+    "0x851363e73285ce21df52239e5b24a3589d4cf11988a4803e2d60a9ef5c064177";
 export const COLLECTION_CREATOR_ADDRESS =
-  "0x714319fa1946db285254e3c7c75a9aac05277200e59429dd1f80f25272910d9c";
+    "0xe0d84a83719f0e096f491f6eb5d91547136314a1e6ac5770983998ac7477b2f6";
 export const COLLECTION_NAME = "Aptogotchi Collection";
 export const MARKETPLACE_CONTRACT_ADDRESS =
-  "0xbf60e962f7e34a0c317cbcd9454a7125a1c3c3d15ec620688e0f357100284605";
+    "0x7f6b2f15251c366407f67a888e7db74b5ae1b723a014bcbfcaa877cdcb9d7a0d";
 export const APT = "0x1::aptos_coin::AptosCoin";
 export const APT_UNIT = 100_000_000;
 
 const config = new AptosConfig({
-  network: Network.TESTNET,
+    network: Network.TESTNET,
 });
 export const aptos = new Aptos(config);
 
 export const getAptogotchi = async (
-  aptogotchiObjectAddr: string
-): Promise<[string, AptogotchiTraits]> => {
-  //console.log("aptogotchiObjectAddr", aptogotchiObjectAddr);
-  const aptogotchi = await aptos.view({
-    payload: {
-      function: `${APTOGOTCHI_CONTRACT_ADDRESS}::main::get_aptogotchi`,
-      typeArguments: [],
-      functionArguments: [aptogotchiObjectAddr],
-    },
-  });
-  //console.log(aptogotchi);
-  return [aptogotchi[0] as string, aptogotchi[1] as AptogotchiTraits];
+    aptogotchiObjectAddr: string
+): Promise<[string, AptogotchiTraits, string, DocumentInfo[], ChangeLog[], Array<string>, string, string]> => {
+    //console.log("aptogotchiObjectAddr", aptogotchiObjectAddr);
+    const aptogotchi = await aptos.view({
+        payload: {
+            function: `${APTOGOTCHI_CONTRACT_ADDRESS}::main::get_echo`,
+            typeArguments: [],
+            functionArguments: [aptogotchiObjectAddr],
+        },
+    });
+    //console.log(aptogotchi);
+    return [aptogotchi[0] as string,
+        aptogotchi[1] as AptogotchiTraits,
+        aptogotchi[2] as string,
+        aptogotchi[3] as DocumentInfo[],
+        aptogotchi[4] as ChangeLog[],
+        aptogotchi[5] as string[],
+        aptogotchi[6] as string,
+        aptogotchi[7] as string];
 };
 
 export const mintAptogotchi = async (
-  sender: Account,
-  name: string,
-  body: number,
-  ear: number,
-  face: number
+    sender: Account,
+    name: string,
+    body: number,
+    ear: number,
+    face: number
 ) => {
-  const rawTxn = await aptos.transaction.build.simple({
-    sender: sender.accountAddress,
-    data: {
-      function: `${APTOGOTCHI_CONTRACT_ADDRESS}::main::create_aptogotchi`,
-      functionArguments: [name, body, ear, face],
-    },
-  });
-  const pendingTxn = await aptos.signAndSubmitTransaction({
-    signer: sender,
-    transaction: rawTxn,
-  });
-  const response = await aptos.waitForTransaction({
-    transactionHash: pendingTxn.hash,
-  });
-  //console.log("minted aptogotchi. - ", response.hash);
+    const rawTxn = await aptos.transaction.build.simple({
+        sender: sender.accountAddress,
+        data: {
+            function: `${APTOGOTCHI_CONTRACT_ADDRESS}::main::create_echo`,
+            functionArguments: [name, body, ear, face],
+        },
+    });
+    const pendingTxn = await aptos.signAndSubmitTransaction({
+        signer: sender,
+        transaction: rawTxn,
+    });
+    const response = await aptos.waitForTransaction({
+        transactionHash: pendingTxn.hash,
+    });
+    //console.log("minted aptogotchi. - ", response.hash);
 };
 
 export const getAptBalance = async (addr: string) => {
-  const result = await aptos.getAccountCoinAmount({
-    accountAddress: addr,
-    coinType: APT,
-  });
+    const result = await aptos.getAccountCoinAmount({
+        accountAddress: addr,
+        coinType: APT,
+    });
 
-  //console.log("APT balance", result);
-  return result;
+    //console.log("APT balance", result);
+    return result;
 };
 
 export const getCollection = async () => {
-  // const collection = await aptos.getCollectionDataByCollectionId({
-  //   collectionId: COLLECTION_ID,
-  // });
-  const collection = await aptos.getCollectionData({
-    collectionName: COLLECTION_NAME,
-    creatorAddress: COLLECTION_CREATOR_ADDRESS,
-  });
-  //console.log("collection", collection);
-  return collection;
+    // const collection = await aptos.getCollectionDataByCollectionId({
+    //   collectionId: COLLECTION_ID,
+    // });
+    const collection = await aptos.getCollectionData({
+        collectionName: COLLECTION_NAME,
+        creatorAddress: COLLECTION_CREATOR_ADDRESS,
+    });
+    //console.log("collection", collection);
+    return collection;
 };
 
 export const getUserOwnedAptogotchis = async (ownerAddr: string) => {
-  const result = await aptos.getAccountOwnedTokensFromCollectionAddress({
-    accountAddress: ownerAddr,
-    collectionAddress: COLLECTION_ID,
-  });
+    const result = await aptos.getAccountOwnedTokensFromCollectionAddress({
+        accountAddress: ownerAddr,
+        collectionAddress: COLLECTION_ID,
+    });
 
-  //console.log("my aptogotchis", result);
-  return result;
+    //console.log("my aptogotchis", result);
+    return result;
 };
 
 export const getAllAptogotchis = async () => {
-  const result: {
-    current_token_datas_v2: Aptogotchi[];
-  } = await aptos.queryIndexer({
-    query: {
-      query: `
+    const result: {
+        current_token_datas_v2: Aptogotchi[];
+    } = await aptos.queryIndexer({
+        query: {
+            query: `
         query MyQuery($collectionId: String) {
           current_token_datas_v2(
             where: {collection_id: {_eq: $collectionId}}
@@ -104,111 +111,111 @@ export const getAllAptogotchis = async () => {
           }
         }
       `,
-      variables: { collectionId: COLLECTION_ID },
-    },
-  });
+            variables: {collectionId: COLLECTION_ID},
+        },
+    });
 
-  //("all aptogotchis", result.current_token_datas_v2);
-  return result.current_token_datas_v2;
+    //("all aptogotchis", result.current_token_datas_v2);
+    return result.current_token_datas_v2;
 };
 
 export const listAptogotchi = async (
-  sender: Account,
-  aptogotchiObjectAddr: string
+    sender: Account,
+    aptogotchiObjectAddr: string
 ) => {
-  const rawTxn = await aptos.transaction.build.simple({
-    sender: sender.accountAddress,
-    data: {
-      function: `${MARKETPLACE_CONTRACT_ADDRESS}::list_and_purchase::list_with_fixed_price`,
-      typeArguments: [APT],
-      functionArguments: [aptogotchiObjectAddr, 10],
-    },
-  });
-  const pendingTxn = await aptos.signAndSubmitTransaction({
-    signer: sender,
-    transaction: rawTxn,
-  });
-  const response = await aptos.waitForTransaction({
-    transactionHash: pendingTxn.hash,
-  });
-  //console.log("listed aptogotchi. - ", response.hash);
+    const rawTxn = await aptos.transaction.build.simple({
+        sender: sender.accountAddress,
+        data: {
+            function: `${MARKETPLACE_CONTRACT_ADDRESS}::token_marketplace::list_with_fixed_price`,
+            typeArguments: [APT],
+            functionArguments: [aptogotchiObjectAddr, 10],
+        },
+    });
+    const pendingTxn = await aptos.signAndSubmitTransaction({
+        signer: sender,
+        transaction: rawTxn,
+    });
+    const response = await aptos.waitForTransaction({
+        transactionHash: pendingTxn.hash,
+    });
+    //console.log("listed aptogotchi. - ", response.hash);
 };
 
 export const buyAptogotchi = async (
-  sender: Account,
-  listingObjectAddr: string
+    sender: Account,
+    listingObjectAddr: string
 ) => {
-  const rawTxn = await aptos.transaction.build.simple({
-    sender: sender.accountAddress,
-    data: {
-      function: `${MARKETPLACE_CONTRACT_ADDRESS}::list_and_purchase::purchase`,
-      typeArguments: [APT],
-      functionArguments: [listingObjectAddr],
-    },
-  });
-  const pendingTxn = await aptos.signAndSubmitTransaction({
-    signer: sender,
-    transaction: rawTxn,
-  });
-  const response = await aptos.waitForTransaction({
-    transactionHash: pendingTxn.hash,
-  });
-  //console.log("bought aptogotchi. - ", response.hash);
+    const rawTxn = await aptos.transaction.build.simple({
+        sender: sender.accountAddress,
+        data: {
+            function: `${MARKETPLACE_CONTRACT_ADDRESS}::token_marketplace::purchase`,
+            typeArguments: [APT],
+            functionArguments: [listingObjectAddr],
+        },
+    });
+    const pendingTxn = await aptos.signAndSubmitTransaction({
+        signer: sender,
+        transaction: rawTxn,
+    });
+    const response = await aptos.waitForTransaction({
+        transactionHash: pendingTxn.hash,
+    });
+    //console.log("bought aptogotchi. - ", response.hash);
 };
 
 export const getAllListingObjectAddresses = async (sellerAddr: string) => {
-  const allListings: [string[]] = await aptos.view({
-    payload: {
-      function: `${MARKETPLACE_CONTRACT_ADDRESS}::list_and_purchase::get_seller_listings`,
-      typeArguments: [],
-      functionArguments: [sellerAddr],
-    },
-  });
-  //console.log("all listings", allListings);
-  return allListings[0];
+    const allListings: [string[]] = await aptos.view({
+        payload: {
+            function: `${MARKETPLACE_CONTRACT_ADDRESS}::token_marketplace::get_seller_listings`,
+            typeArguments: [],
+            functionArguments: [sellerAddr],
+        },
+    });
+    //console.log("all listings", allListings);
+    return allListings[0];
 };
 
 export const getAllSellers = async () => {
-  const allSellers: [string[]] = await aptos.view({
-    payload: {
-      function: `${MARKETPLACE_CONTRACT_ADDRESS}::list_and_purchase::get_sellers`,
-      typeArguments: [],
-      functionArguments: [],
-    },
-  });
-  //console.log("all sellers", allSellers);
-  return allSellers[0];
+    const allSellers: [string[]] = await aptos.view({
+        payload: {
+            function: `${MARKETPLACE_CONTRACT_ADDRESS}::token_marketplace::get_sellers`,
+            typeArguments: [],
+            functionArguments: [],
+        },
+    });
+    //console.log("all sellers", allSellers);
+    return allSellers[0];
 };
 
 export const getListingObjectAndSeller = async (
-  listingObjectAddr: string
+    listingObjectAddr: string
 ): Promise<[string, string]> => {
-  const listingObjectAndSeller = await aptos.view({
-    payload: {
-      function: `${MARKETPLACE_CONTRACT_ADDRESS}::list_and_purchase::listing`,
-      typeArguments: [],
-      functionArguments: [listingObjectAddr],
-    },
-  });
-  //console.log("listing object and seller", listingObjectAndSeller);
-  return [
-    // @ts-ignore
-    listingObjectAndSeller[0]["inner"] as string,
-    listingObjectAndSeller[1] as string,
-  ];
+    const listingObjectAndSeller = await aptos.view({
+        payload: {
+            function: `${MARKETPLACE_CONTRACT_ADDRESS}::token_marketplace::listing`,
+            typeArguments: [],
+            functionArguments: [listingObjectAddr],
+        },
+    });
+    //console.log("listing object and seller", listingObjectAndSeller);
+    return [
+        // @ts-ignore
+        listingObjectAndSeller[0]["inner"] as string,
+        listingObjectAndSeller[1] as string,
+    ];
 };
 
 export const getListingObjectPrice = async (
-  listingObjectAddr: string
+    listingObjectAddr: string
 ): Promise<number> => {
-  const listingObjectPrice = await aptos.view({
-    payload: {
-      function: `${MARKETPLACE_CONTRACT_ADDRESS}::list_and_purchase::price`,
-      typeArguments: [APT],
-      functionArguments: [listingObjectAddr],
-    },
-  });
-  //console.log("listing object price", JSON.stringify(listingObjectPrice));
-  // @ts-ignore
-  return (listingObjectPrice[0]["vec"] as number) / APT_UNIT;
+    const listingObjectPrice = await aptos.view({
+        payload: {
+            function: `${MARKETPLACE_CONTRACT_ADDRESS}::token_marketplace::price`,
+            typeArguments: [APT],
+            functionArguments: [listingObjectAddr],
+        },
+    });
+    //console.log("listing object price", JSON.stringify(listingObjectPrice));
+    // @ts-ignore
+    return (listingObjectPrice[0]["vec"] as number) / APT_UNIT;
 };

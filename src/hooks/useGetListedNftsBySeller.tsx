@@ -18,10 +18,17 @@ export const useGetListedNftsBySeller = (sellerAddr: string) => {
             listingObjectAddress
           );
           const price = await getListingObjectPrice(listingObjectAddress);
-          const [name, traits] = await getAptogotchi(nftAddress);
+          const [name, traits, description, documents, change_log, whitelist, coin_type, owner] = await getAptogotchi(nftAddress);
           aptogotchiWithTraits.push({
             name,
             address: nftAddress,
+            description,
+            documents,
+            change_log,
+            whitelist,
+            coin_type,
+            owner,
+            ...traits,
             ...traits,
             listing_object_address: listingObjectAddress,
             seller_address: sellerAddress,
