@@ -6,6 +6,7 @@ import { useKeylessAccount } from "@/context/KeylessAccountContext";
 import { collapseAddress } from "@/utils/address";
 import { toast } from "sonner";
 import { Button, Box, Text, Flex } from "@chakra-ui/react";
+import {KeylessAccount} from "@aptos-labs/ts-sdk";
 
 
 const buttonStyles =
