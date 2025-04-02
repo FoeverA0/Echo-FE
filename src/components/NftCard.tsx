@@ -63,8 +63,8 @@ export const NftCard = ({ nft, children }: Props) => {
                     {nft.name}
                 </Text>
                 <Text fontSize="sm" color="GrayText">
-                    {nft.seller_address && (
-                        <Link href={`/portfolio/${nft.seller_address}`} passHref legacyBehavior>
+                    {nft.owner && (
+                        <Link href={`/portfolio/${nft.owner}`} passHref legacyBehavior>
                             <Text
                                 as="a"
                                 onClick={(e) => e.stopPropagation()}
@@ -79,7 +79,7 @@ export const NftCard = ({ nft, children }: Props) => {
                                 }}
                                 transition="all 0.2s"
                             >
-                                {shortenAddress(nft.seller_address)}
+                                {shortenAddress(nft.owner)}
                             </Text>
                         </Link>
                     )}
