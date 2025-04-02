@@ -12,6 +12,10 @@ type Props = {
   nft: AptogotchiWithTraits | ListedAptogotchiWithTraits;
 };
 
+function shortenAddress(address: string, startLength = 4, endLength = 4) {
+    return `${address.substring(0, startLength)}...${address.substring(address.length - endLength)}`;
+}
+
 export const NftCard = ({ nft, children }: Props) => {
 
   const headUrl = BASE_PATH + "head.png";
@@ -42,7 +46,7 @@ export const NftCard = ({ nft, children }: Props) => {
         sx={{
           transition: "transform 0.2s, box-shadow 0.2s",
           _hover: {
-            transform: "scale(1.05)",
+            //transform: "scale(1.05)",
             boxShadow: "lg",
           },
         }}
@@ -54,24 +58,37 @@ export const NftCard = ({ nft, children }: Props) => {
           {aptogotchiImage}
 
           {/* 右侧：名字和信息 */}
-          <Box flex={1}>
-            <Text fontSize="xl" fontWeight="bold" marginBottom={2}>
-              {nft.name}
-            </Text>
-            <Link
-              href={`https://explorer.aptoslabs.com/object/${nft.address}?network=testnet`}
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              <Text fontSize="sm" color="GrayText">
-                Owner: testOwner
-              </Text>
-              <Text fontSize="md" color="GrayText">
-                Brief of NFT
-              </Text>
-            </Link>
-            <Box marginTop={4}>{children}</Box>
-          </Box>
+            <Box flex={1}>
+                <Text fontSize="xl" fontWeight="bold" marginBottom={2}>
+                    {nft.name}
+                </Text>
+                <Text fontSize="sm" color="GrayText">
+                    {nft.seller_address && (
+                        <Link href={`/portfolio/${nft.seller_address}`} passHref legacyBehavior>
+                            <Text
+                                as="a"
+                                onClick={(e) => e.stopPropagation()}
+                                fontSize="sm"
+                                color="gray.500"
+                                textDecoration="none"
+                                cursor="pointer"
+                                _hover={{
+                                    color: "blue.500",
+                                    textDecoration: "underline",
+                                    textUnderlineOffset: "2px",
+                                }}
+                                transition="all 0.2s"
+                            >
+                                {shortenAddress(nft.seller_address)}
+                            </Text>
+                        </Link>
+                    )}
+                </Text>
+                <Text fontSize="md" color="GrayText">
+                    Brief of NFT
+                </Text>
+                <Box marginTop={4}>{children}</Box>
+            </Box>
         </HStack>
       </Card>
     </Link>
