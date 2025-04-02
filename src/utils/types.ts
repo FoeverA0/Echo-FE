@@ -15,7 +15,7 @@ export type Listing = {
   seller_address: string;
 };
 
-export type AptogotchiWithTraits = Aptogotchi & AptogotchiTraits;
+export type AptogotchiWithTraits = Aptogotchi & AptogotchiTraits & Listing;
 export type ListedAptogotchiWithTraits = Aptogotchi &
   AptogotchiTraits &
   Listing;
