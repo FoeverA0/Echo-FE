@@ -30,7 +30,7 @@ export default function Page() {
     >
       {/* 欢迎词 */}
       <Heading mb={6} textAlign="center" color="gray.800">
-        Welcome to Echo Knowledge Network
+        Welcome to AptKnow Knowledge Network
       </Heading>
 
       {/* 输入框和选择框 */}

@@ -65,9 +65,14 @@ export const List = ({ nftTokenObjectAddr }: Props) => {
       });
   };
 
+  const handleOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation(); // 阻止事件冒泡
+    onOpen();
+  };
+
   return (
     <Box>
-      <Button width={160} onClick={onOpen}>
+      <Button width={160} onClick={handleOpen}>
         List
       </Button>
       <Modal isOpen={isOpen} onClose={onClose}>

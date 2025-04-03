@@ -5,8 +5,8 @@ import { NavBar } from "@/components/Navbar";
 import Page from "@/components/Page";
 
 export const metadata: Metadata = {
-  title: "Echo",
-  description: "Echo Knowledge Avatars",
+  title: "AptKnow",
+  description: "AptKnow Knowledge Avatars",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

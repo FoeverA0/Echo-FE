@@ -45,7 +45,7 @@ export const Portfolio = ({ address }: Props) => {
             })}
           </SimpleGrid>
         ) : (
-          <Button onClick={goToMint}>Mint a Aptogotchi NFT</Button>
+          <Button onClick={goToMint}>Mint a AptKnow NFT</Button>
         )}
       </HStack>
       <Divider />

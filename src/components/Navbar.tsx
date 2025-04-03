@@ -48,10 +48,10 @@ export const NavBar = () => {
                 >
                     {/* Logo 图片 */}
                     <Box width="40px" height="40px">
-                        <img src="/echo_logo.PNG" alt="Echo Logo" style={{width: "100%", height: "100%"}}/>
+                        <img src="/echo_logo.PNG" alt="AptKnow Logo" style={{width: "100%", height: "100%"}}/>
                     </Box>
                     <Text fontSize="3xl" fontWeight="bold">
-                        Echo
+                        AptKnow
                     </Text>
                 </Box>
                 {/* 如果是 chat 页面，只显示检索到的行 */}

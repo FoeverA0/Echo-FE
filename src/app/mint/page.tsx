@@ -22,7 +22,7 @@ export default function Page() {
     return (
         <Box>
             <Heading margin={4} textAlign="center">
-                Mint a Aptogotchi NFT
+                Mint a AptKnow NFT
             </Heading>
             <PageContent/>
         </Box>
@@ -96,7 +96,7 @@ function PageContent() {
         return (
             <Alert status="warning" variant="left-accent" marginY={8}>
                 <AlertIcon/>
-                Connect wallet to mint your Aptogotchi NFT.
+                Connect wallet to mint your AptKnow NFT.
             </Alert>
         );
     }
@@ -154,7 +154,7 @@ function Mint() {
         return (
             <Alert status="success" variant="left-accent">
                 <AlertIcon />
-                Minted successfully! Go to My Portfolio to see your Aptogotchi.
+                Minted successfully! Go to My Portfolio to see your AptKnow NFT.
             </Alert>
         );
     }
@@ -171,7 +171,7 @@ function Mint() {
                     gap={4}
                     justifyContent="space-between"
                 >
-                    <FormLabel width={150}>Aptogotchi Name</FormLabel>
+                    <FormLabel width={150}>AptKnow Name</FormLabel>
                     <Input
                         width={300}
                         onChange={(e) => setName(e.target.value)}
@@ -188,7 +188,7 @@ function Mint() {
                     gap={4}
                     justifyContent="space-between"
                 >
-                    <FormLabel width={150}>Aptogotchi Coin Address</FormLabel>
+                    <FormLabel width={150}>AptKnow Coin Address</FormLabel>
                     <Input
                         width={300}
                         onChange={(e) => setCoin(e.target.value)}
@@ -205,7 +205,7 @@ function Mint() {
                     gap={4}
                     justifyContent="space-between"
                 >
-                    <FormLabel width={150}>Aptogotchi Description</FormLabel>
+                    <FormLabel width={150}>AptKnow Description</FormLabel>
                     <Input
                         width={300}
                         onChange={(e) => setDesc(e.target.value)}
