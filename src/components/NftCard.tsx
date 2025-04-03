@@ -18,24 +18,24 @@ function shortenAddress(address: string, startLength = 4, endLength = 4) {
 
 export const NftCard = ({ nft, children }: Props) => {
 
-  const headUrl = BASE_PATH + "head.png";
+  // const headUrl = BASE_PATH + "head.png";
   const bodyUrl = BASE_PATH + bodies[nft.body];
   const earUrl = BASE_PATH + ears[nft.ear];
   const faceUrl = BASE_PATH + faces[nft.face];
 
   const aptogotchiImage = (
     <Box position={"relative"} height="150px" width="150px">
-      <Box position={"absolute"} top={"0px"} left={"0px"}>
+      {/* <Box position={"absolute"} top={"0px"} left={"0px"}>
         <Image src={headUrl} alt="pet head" height="150" width="150" />
-      </Box>
+      </Box> */}
       <Box position={"absolute"} top={"0px"} left={"0px"}>
         <Image src={bodyUrl} alt="pet body" height="150" width="150" />
       </Box>
       <Box position={"absolute"} top={"0px"} left={"0px"}>
-        <Image src={earUrl} alt="pet ears" height="150" width="150" />
+        <Image src={faceUrl} alt="pet face" height="150" width="150" />
       </Box>
       <Box position={"absolute"} top={"0px"} left={"0px"}>
-        <Image src={faceUrl} alt="pet face" height="150" width="150" />
+        <Image src={earUrl} alt="pet ears" height="150" width="150" />
       </Box>
     </Box>
   );
