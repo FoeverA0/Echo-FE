@@ -75,7 +75,7 @@ export const NftCard = ({ nft, children }: Props) => {
                                     }}
                                     transition="all 0.2s"
                                 >
-                                    {shortenAddress(nft.owner)}
+                                   Owner: {shortenAddress(nft.owner)}
                                 </Text>
                             </Link>
                         )}

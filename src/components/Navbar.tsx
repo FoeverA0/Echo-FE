@@ -19,7 +19,7 @@ export const NavBar = () => {
     const MAX_LINES = 5;
     const isChatPage = pathname === "/chat";
 
-    // 颜色模式相关样式
+    // 提前计算颜色模式值，避免在 JSX 属性或回调函数中调用 Hook
     const navBg = useColorModeValue("white", "gray.800");
     const menuHoverBg = useColorModeValue("blue.50", "blue.800");
     const borderColor = useColorModeValue("gray.200", "gray.700");
@@ -27,6 +27,13 @@ export const NavBar = () => {
         "linear(to-r, blue.600, purple.600)",
         "linear(to-r, blue.300, purple.300)"
     );
+    const textColor = useColorModeValue("gray.800", "white");
+    const retrievedTextColor = useColorModeValue("gray.700", "gray.200");
+    const retrievedBorderColor = useColorModeValue("blue.100", "blue.800");
+    const retrievedBoxBg = useColorModeValue("blue.50", "blue.900");
+    const linkColor = useColorModeValue("blue.600", "blue.200");
+    const linkHoverColor = useColorModeValue("blue.500", "blue.300");
+    const scrollbarThumbColor = useColorModeValue('rgba(66,153,225,0.5)', 'rgba(128,90,213,0.5)');
 
     useEffect(() => {
         if (!isChatPage) {
@@ -58,7 +65,7 @@ export const NavBar = () => {
             as="nav"
             direction="column"
             bg={navBg}
-            color={useColorModeValue("gray.800", "white")}
+            color={textColor}
             px={6}
             py={8}
             position="fixed"
@@ -114,21 +121,11 @@ export const NavBar = () => {
             </Box>
 
             {/* 主内容区域 */}
-            <VStack
-                align="stretch"
-                spacing={6}
-                flex={1}
-                overflow="hidden"
-            >
+            <VStack align="stretch" spacing={6} flex={1} overflow="hidden">
                 {isChatPage ? (
                     <SlideFade in={true} offsetY={20}>
                         <Box>
-                            <Text
-                                fontSize="lg"
-                                fontWeight="bold"
-                                mb={4}
-                                color={useColorModeValue("gray.600", "gray.300")}
-                            >
+                            <Text fontSize="lg" fontWeight="bold" mb={4} color={retrievedTextColor}>
                                 📌 Retrieved Context
                             </Text>
                             <Divider mb={4} borderColor={borderColor} />
@@ -139,7 +136,7 @@ export const NavBar = () => {
                                     '&::-webkit-scrollbar': { width: '6px' },
                                     '&::-webkit-scrollbar-track': { bg: 'transparent' },
                                     '&::-webkit-scrollbar-thumb': {
-                                        bg: useColorModeValue('rgba(66,153,225,0.5)', 'rgba(128,90,213,0.5)'),
+                                        bg: scrollbarThumbColor,
                                         borderRadius: '3px'
                                     }
                                 }}
@@ -149,47 +146,36 @@ export const NavBar = () => {
                                         key={index}
                                         mb={4}
                                         p={4}
-                                        bg={useColorModeValue("blue.50", "blue.900")}
+                                        bg={retrievedBoxBg}
                                         borderRadius="lg"
                                         boxShadow="sm"
                                         border="1px solid"
-                                        borderColor={useColorModeValue("blue.100", "blue.800")}
+                                        borderColor={retrievedBorderColor}
                                         _hover={{
                                             transform: "translateY(-2px)",
                                             boxShadow: "md"
                                         }}
                                         transition="all 0.2s"
                                     >
-                                        <Text
-                                            fontSize="sm"
-                                            color={useColorModeValue("gray.700", "gray.200")}
-                                            fontWeight="medium"
-                                            mb={2}
-                                            noOfLines={4}
-                                        >
+                                        <Text fontSize="sm" color={retrievedTextColor} fontWeight="medium" mb={2} noOfLines={4}>
                                             {line.text}
                                         </Text>
                                         <Flex justify="space-between" align="center">
-                                            <Text fontSize="xs" color={useColorModeValue("blue.600", "blue.200")}>
+                                            <Text fontSize="xs" color={linkColor}>
                                                 Similarity: <strong>{line.distance.toFixed(2)}</strong>
                                             </Text>
-                                            <Icon
-                                                as={FiChevronRight}
-                                                color={useColorModeValue("blue.500", "blue.300")}
-                                                boxSize={4}
-                                            />
+                                            <Icon as={FiChevronRight} color={linkHoverColor} boxSize={4} />
                                         </Flex>
                                     </Box>
                                 ))}
                                 {retrievedLines.length > MAX_LINES && (
                                     <Link
                                         fontSize="sm"
-                                        color={useColorModeValue("blue.600", "blue.200")}
+                                        color={linkColor}
                                         fontWeight="semibold"
                                         onClick={() => router.push("/details")}
                                         _hover={{ textDecoration: "underline" }}
                                         display="flex"
-                                        align="center"
                                     >
                                         View More Results
                                         <Icon as={FiChevronRight} ml={1} />
@@ -199,35 +185,19 @@ export const NavBar = () => {
                         </Box>
                     </SlideFade>
                 ) : (
-                    <VStack
-                        align="stretch"
-                        spacing={2}
-                        flex={1}
-                    >
+                    <VStack align="stretch" spacing={2} flex={1}>
                         {navItems.map((item, index) => (
                             <NextLink key={index} href={item.href} passHref>
                                 <Flex
                                     align="center"
                                     p={3}
                                     borderRadius="lg"
-                                    _hover={{
-                                        bg: menuHoverBg,
-                                        transform: "translateX(4px)"
-                                    }}
+                                    _hover={{ bg: menuHoverBg, transform: "translateX(4px)" }}
                                     transition="all 0.2s"
                                     cursor="pointer"
                                 >
-                                    <Icon
-                                        as={item.icon}
-                                        boxSize={5}
-                                        mr={3}
-                                        color={useColorModeValue("gray.600", "gray.300")}
-                                    />
-                                    <Text
-                                        fontSize="md"
-                                        fontWeight="semibold"
-                                        color={useColorModeValue("gray.700", "gray.200")}
-                                    >
+                                    <Icon as={item.icon} boxSize={5} mr={3} color={retrievedTextColor} />
+                                    <Text fontSize="md" fontWeight="semibold" color={retrievedTextColor}>
                                         {item.label}
                                     </Text>
                                 </Flex>
