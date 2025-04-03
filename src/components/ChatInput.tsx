@@ -1,4 +1,4 @@
-import { Flex, Textarea, Select, Button } from "@chakra-ui/react";
+import { Flex, Textarea, Select, Button, Box, useColorModeValue } from "@chakra-ui/react";
 import { useState } from "react";
 
 interface ChatInputProps {
@@ -16,83 +16,88 @@ export const ChatInput = ({
   setSelectedKnowledgeBase,
   handleSendMessage,
 }: ChatInputProps) => {
-  const [inputHeight, setInputHeight] = useState(60); // 初始高度为 60px
+  const [baseHeight] = useState(60); // 基准高度
+  const borderColor = useColorModeValue("gray.300", "gray.600");
+  const bgColor = useColorModeValue("white", "gray.800");
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
-      setInput(""); // 清空输入框
+      setInput("");
     }
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    // 自动高度调整逻辑
+    e.target.style.height = "auto";
+    e.target.style.height = `${Math.min(e.target.scrollHeight, 170)}px`;
+    setInput(e.target.value);
+  };
+
   return (
-    <Flex
-      p={4}
-      bg="white"
-      border="1px solid #E2E8F0" // 添加边框
-      borderRadius="33px" // 设置圆角
-      direction="column" // 垂直排列
-      align="center"
-      gap={4}
-      position="fixed" // 固定在视口底部
-      bottom={4} // 距离视口底部 4 单位（约 16px）
-      left="calc(50% + 120px)" // 考虑导航栏宽度，水平居中
-      transform="translateX(-50%)" // 调整居中偏移
-      width="50rem" // 设置固定宽度
-      zIndex={10} // 确保在其他内容之上
-      boxShadow="md" // 添加阴影效果
-      style={{ height: `${Math.min(230, Math.max(90, inputHeight + 90))}px` }} // 动态调整高度
-    >
-      {/* 第一行：输入框 */}
-      <Flex align="center" gap={4}>
+    <Box width="full" maxWidth="container.lg" mx="auto">
+      <Flex
+        p={4}
+        bg={bgColor}
+        border="1px solid"
+        borderColor={borderColor}
+        borderRadius="xl"
+        direction="column"
+        gap={4}
+        boxShadow="md"
+      >
+        {/* 输入区域 */}
         <Textarea
-          flex={1}
           placeholder="Start a new chat"
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={handleInputChange}
           onKeyDown={handleKeyDown}
-          onInput={(e) => {
-            const target = e.target as HTMLTextAreaElement;
-            target.style.height = "auto"; // 重置高度
-            target.style.height = `${target.scrollHeight}px`; // 根据内容动态调整高度
-            setInputHeight(target.scrollHeight);
-          }}
-          border="1px solid gray.300"
-          outline="none" // 移除默认的选中框
+          border="1px solid"
+          borderColor="gray.300"
           _focus={{
-            boxShadow: "none", // 移除聚焦时的阴影
-            borderColor: "gray.300", // 保持边框颜色不变
+            borderColor: "blue.300",
+            boxShadow: "none"
           }}
-          resize="none" // 禁止用户手动调整大小
-          textAlign="left" // 文本靠左对齐
-          verticalAlign="top" // 文本靠上对齐
-          width="48rem" // 占满宽度
-          height={"60px"} // 初始高度
+          resize="none"
+          minHeight={`${baseHeight}px`}
           maxHeight="170px"
-          minHeight="90px"
+          overflowY="auto"
+          transition="height 0.2s ease"
+          fontSize="md"
+          lineHeight="tall"
         />
-      </Flex>
 
-      {/* 第二行：选择框和发送按钮 */}
-      <Flex justify="flex-end" align="center" gap={4} width="100%">
-        <Select
-          placeholder="Phala"
-          value={selectedKnowledgeBase}
-          onChange={(e) => setSelectedKnowledgeBase(e.target.value)}
-          bg="gray.100"
-          border="1px solid gray.300"
-          _focus={{ borderColor: "cyan.400" }}
-          width="200px"
-        >
-          <option value="knowledge-base-1">Phala</option>
-        </Select>
-        <Button colorScheme="cyan" onClick={() => {
-            handleSendMessage();
-            setInput(""); // 清空输入框
-          }}>
-          Send
-        </Button>
+        {/* 操作栏 */}
+        <Flex justify="space-between" align="center">
+          <Select
+            placeholder="Select Knowledge Base"
+            value={selectedKnowledgeBase}
+            onChange={(e) => setSelectedKnowledgeBase(e.target.value)}
+            width="220px"
+            size="md"
+            focusBorderColor="blue.300"
+            borderColor="gray.300"
+          >
+            <option value="phala">Phala Network</option>
+            <option value="blockchain-general">Blockchain General</option>
+          </Select>
+
+          <Button
+            colorScheme="blue"
+            size="md"
+            px={8}
+            onClick={() => {
+              handleSendMessage();
+              setInput("");
+            }}
+            _hover={{ transform: "translateY(-1px)" }}
+            transition="all 0.2s"
+          >
+            Send
+          </Button>
+        </Flex>
       </Flex>
-    </Flex>
+    </Box>
   );
 };
