@@ -34,24 +34,24 @@ const NftDetails = () => {
     if (!nft) {
         return <Loading/>; // 如果 nft 为 null，显示错误信息
     }
-    const headUrl = BASE_PATH + "head.png";
+    // const headUrl = BASE_PATH + "head.png";
     const bodyUrl = BASE_PATH + bodies[nft.body];
     const earUrl = BASE_PATH + ears[nft.ear];
     const faceUrl = BASE_PATH + faces[nft.face];
 
     const aptogotchiImage = (
         <Box position={"relative"} height="100px" width="100px">
-            <Box position={"absolute"} top={"0px"} left={"0px"}>
+            {/* <Box position={"absolute"} top={"0px"} left={"0px"}>
                 <Image src={headUrl} alt="pet head" height="100" width="100"/>
-            </Box>
+            </Box> */}
             <Box position={"absolute"} top={"0px"} left={"0px"}>
                 <Image src={bodyUrl} alt="pet body" height="100" width="100"/>
             </Box>
             <Box position={"absolute"} top={"0px"} left={"0px"}>
-                <Image src={earUrl} alt="pet ears" height="100" width="100"/>
+                <Image src={faceUrl} alt="pet face" height="100" width="100"/>
             </Box>
             <Box position={"absolute"} top={"0px"} left={"0px"}>
-                <Image src={faceUrl} alt="pet face" height="100" width="100"/>
+                <Image src={earUrl} alt="pet ears" height="100" width="100"/>
             </Box>
         </Box>
     );
