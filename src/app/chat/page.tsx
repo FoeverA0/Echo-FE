@@ -1,48 +1,60 @@
 "use client";
 
-import { Box, Flex, Select, Text, VStack } from "@chakra-ui/react";
+import { Box, Flex, Text, VStack, useColorModeValue } from "@chakra-ui/react";
+import { keyframes } from "@emotion/react";
 import { useState, useEffect } from "react";
 import { ChatInput } from "../../components/ChatInput";
 import { useSearchParams } from "next/navigation";
 import { searchQuery } from "@/utils/api";
 import { useRetrievedLines } from "@/context/RetrievedLinesContext";
-import { Suspense } from 'react'
-import Loading from "@/components/loading"; // 引入加载动画组件
+import { Suspense } from 'react';
+import Loading from "@/components/loading";
 
-const QueryHandler = ({
-  setQuery,
-}: {
-  setQuery: (query: string | null) => void;
-}) => {
+// 加载动画定义
+const pulse = keyframes`
+  0% { transform: scale(0.95); opacity: 0.6; }
+  50% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.6; }
+`;
+
+const fadeIn = keyframes`
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+`;
+
+const QueryHandler = ({ setQuery }: { setQuery: (query: string | null) => void }) => {
   const searchParams = useSearchParams();
-
   useEffect(() => {
     const currentQuery = searchParams.get("query");
     setQuery(currentQuery);
   }, [searchParams, setQuery]);
-
-  return null; // 这个组件只负责处理逻辑，不渲染任何内容
+  return null;
 };
 
 export default function ChatPage() {
   const [messages, setMessages] = useState<{ user: string; llm: string }[]>([]);
   const [input, setInput] = useState("");
-  const [selectedKnowledgeBase, setSelectedKnowledgeBase] = useState("");
-  const { setRetrievedLines } = useRetrievedLines(); // 使用全局状态
-  const [hasSentInitialQuery, setHasSentInitialQuery] = useState(false); // 添加状态
-  const [query, setQuery] = useState<string | null>(null); // 独立的 query 状态
-  useEffect(() => {
-    // 禁用页面滚动
-    document.body.style.overflow = "hidden";
-    document.documentElement.style.overflow = "hidden";
+  const [selectedKnowledgeBase, setSelectedKnowledgeBase] = useState("phala");
+  const { setRetrievedLines } = useRetrievedLines();
+  const [hasSentInitialQuery, setHasSentInitialQuery] = useState(false);
+  const [query, setQuery] = useState<string | null>(null);
+  const inputBg = useColorModeValue("white", "gray.800");
 
-    // 清理样式
+  // 动态颜色值
+  const bgColor = useColorModeValue("gray.50", "gray.800");
+  const messageBg = useColorModeValue("white", "gray.700");
+  const borderColor = useColorModeValue("gray.200", "gray.600");
+  const aiTextColor = useColorModeValue("gray.700", "gray.100");
+  const loadingTextColor = useColorModeValue("gray.500", "gray.400");
+  // 禁用页面滚动
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = "";
-      document.documentElement.style.overflow = "";
     };
   }, []);
 
+  // 处理初始查询
   useEffect(() => {
     if (query && !hasSentInitialQuery) {
       handleSendMessage(query);
@@ -50,95 +62,161 @@ export default function ChatPage() {
     }
   }, [query, hasSentInitialQuery]);
 
+  // 发送消息处理
   const handleSendMessage = async (message: string) => {
     if (!message.trim()) return;
 
-    // 添加用户消息到聊天记录
     setMessages((prev) => [...prev, { user: message, llm: "Loading..." }]);
 
     try {
-      // 调用后端接口
       const response = await searchQuery(message, selectedKnowledgeBase);
-
-      // 更新 LLM 回复
       setMessages((prev) => {
         const updatedMessages = [...prev];
         updatedMessages[updatedMessages.length - 1].llm = response.answer;
         return updatedMessages;
       });
-      // 更新检索到的行到全局状态
       setRetrievedLines(response.retrieved_lines);
-    } catch (error: any) {
-      console.error("Error fetching LLM response:", error);
+    } catch (error) {
+      console.error("Error fetching response:", error);
       setMessages((prev) => {
         const updatedMessages = [...prev];
-        updatedMessages[updatedMessages.length - 1].llm =
-          "Failed to fetch response. Please try again.";
+        updatedMessages[updatedMessages.length - 1].llm = "Failed to fetch response. Please try again.";
         return updatedMessages;
       });
     }
   };
 
   return (
-    <Flex direction="column" height="100vh" bg="white" overflow="hidden">
+    <Flex
+      direction="column"
+      height="100vh"
+      bg={"white"}
+      position="relative"
+      overflow="hidden"
+    >
       <Suspense fallback={<Loading />}>
         <QueryHandler setQuery={setQuery} />
       </Suspense>
-    {/* 聊天内容区域 */}
-    <VStack
-        flex={1} // 让聊天内容区域占据剩余空间
-        overflowY="auto" // 启用垂直滚动
-        spacing={4}
-        p={4}
-        pb={100}
-        align="center"
-        bg="white"
-        // borderBottom="1px solid #E2E8F0"
-        maxHeight={"calc(100vh - 230px)"} // 限制最大高度
-        width={"100%"} // 设置宽度为 100%
-    >
+
+      {/* 聊天内容区域 */}
+      <VStack
+        flex={1}
+        overflowY="auto"
+        spacing={6}
+        p={6}
+        pb={{ base: 32, md: 28 }} // 响应式底部间距
+        align="stretch"
+        css={{
+          "&::-webkit-scrollbar": {
+            width: "6px",
+          },
+          "&::-webkit-scrollbar-track": {
+            background: "rgba(0, 0, 0, 0.05)",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            background: "rgba(0, 0, 0, 0.2)",
+            borderRadius: "4px",
+          },
+        }}
+      >
         {messages.map((message, index) => (
-        <Flex key={index} direction="column" gap={2} width={"75%"}>
+          <Flex 
+            key={index} 
+            direction="column" 
+            gap={3}
+            px={4}
+            animation={`${fadeIn} 0.3s ease-out`}
+          >
             {/* 用户消息 */}
             <Flex justify="flex-end">
-            <Box
-                bg="cyan.100"
-                color="gray.800"
-                px={5}
-                py={2}
-                borderRadius="md"
-                maxWidth="70%"
-                textAlign="right"
-            >
-                {message.user}
-            </Box>
-            </Flex>
-            {/* LLM 回复 */}
-            <Flex justify="flex-start">
-            <Box
-                bg="gray.100"
-                color="gray.800"
+              <Box
+                bgGradient="linear(to-br, blue.400, blue.500)"
+                color="white"
                 px={4}
-                py={2}
-                borderRadius="md"
-                maxWidth="100%"
-                textAlign="left"
-            >
-                {message.llm}
-            </Box>
+                py={3}
+                borderRadius="xl"
+                maxWidth={{ base: "90%", md: "55%" }}
+                boxShadow="lg"
+                transition="all 0.2s"
+                _hover={{ transform: "translateY(-2px)" }}
+              >
+                <Text fontSize="md" lineHeight="tall" whiteSpace="pre-wrap">
+                  {message.user}
+                </Text>
+              </Box>
             </Flex>
-        </Flex>
-        ))}
-    </VStack>
 
-    {/* 输入框区域 */}
-    <ChatInput
-        input={input}
-        setInput={setInput}
-        selectedKnowledgeBase={selectedKnowledgeBase}
-        setSelectedKnowledgeBase={setSelectedKnowledgeBase}
-        handleSendMessage={() => handleSendMessage(input)}
-      />
+            {/* AI回复 */}
+            <Flex justify="flex-start">
+              <Box
+                bg={messageBg}
+                color={aiTextColor}
+                px={4}
+                py={3}
+                borderRadius="xl"
+                maxWidth={{ base: "90%", md: "65%" }}
+                boxShadow="md"
+                borderWidth="1px"
+                borderColor={borderColor}
+                position="relative"
+                _before={{
+                  content: '""',
+                  position: "absolute",
+                  left: "-8px",
+                  top: "12px",
+                  width: 0,
+                  height: 0,
+                  borderTop: "8px solid transparent",
+                  borderBottom: "8px solid transparent",
+                  borderRight: `8px solid ${messageBg}`,
+                }}
+              >
+                {message.llm === "Loading..." ? (
+                  <Flex align="center" gap={2}>
+                    <Box
+                      w="12px"
+                      h="12px"
+                      bg="blue.500"
+                      borderRadius="full"
+                      animation={`${pulse} 1.5s infinite`}
+                    />
+                    <Text color={loadingTextColor}>
+                      Generating response...
+                    </Text>
+                  </Flex>
+                ) : (
+                  <Text fontSize="md" lineHeight="tall" whiteSpace="pre-wrap">
+                    {message.llm}
+                  </Text>
+                )}
+              </Box>
+            </Flex>
+          </Flex>
+        ))}
+      </VStack>
+
+      {/* 输入框区域 - 完美定位方案 */}
+      <Box
+        position="sticky"
+        bottom={10}
+        width="full"
+        bg={inputBg}
+        borderTopWidth="1px"
+        borderTopColor={borderColor}
+        zIndex={10}
+        pt={4}
+        pb={{ base: 4, md: 6 }} // 响应式内边距
+        px={{ base: 4, md: 6 }}
+        boxShadow="0 -4px 12px rgba(0, 0, 0, 0.05)"
+      >
+        <ChatInput
+          input={input}
+          setInput={setInput}
+          selectedKnowledgeBase={selectedKnowledgeBase}
+          setSelectedKnowledgeBase={setSelectedKnowledgeBase}
+          handleSendMessage={() => handleSendMessage(input)}
+        />
+      </Box>
     </Flex>
   );
 }
