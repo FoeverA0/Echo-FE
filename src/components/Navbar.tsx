@@ -1,151 +1,246 @@
 "use client";
 import React, { useEffect } from "react";
-import {Box, Flex, VStack, Link, Text, Divider} from "@chakra-ui/react";
+import {
+    Box, Flex, VStack, Text, Divider, Icon,
+    useColorModeValue, Link, SlideFade
+} from "@chakra-ui/react";
 import NextLink from "next/link";
+import { FiBook, FiUploadCloud, FiFolder, FiChevronRight } from "react-icons/fi";
 import WalletButtons from "./WalletButtons";
-import {useRouter, usePathname} from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useRetrievedLines } from "@/context/RetrievedLinesContext";
 import { useKeylessAccount } from "@/context/KeylessAccountContext";
+
 export const NavBar = () => {
     const router = useRouter();
-    const pathname = usePathname(); // 获取当前路径
-    const { retrievedLines, setRetrievedLines } = useRetrievedLines(); // 获取和设置检索到的行
-    const { keylessAccount, setKeylessAccount } = useKeylessAccount();
+    const pathname = usePathname();
+    const { retrievedLines, setRetrievedLines } = useRetrievedLines();
+    const { keylessAccount } = useKeylessAccount();
     const MAX_LINES = 5;
-    const isChatPage = pathname === "/chat"; // 判断是否为 chat 页面
-      // 清空检索到的行，当路径不为 /chat 时
+    const isChatPage = pathname === "/chat";
+
+    // 颜色模式相关样式
+    const navBg = useColorModeValue("white", "gray.800");
+    const menuHoverBg = useColorModeValue("blue.50", "blue.800");
+    const borderColor = useColorModeValue("gray.200", "gray.700");
+    const brandGradient = useColorModeValue(
+        "linear(to-r, blue.600, purple.600)",
+        "linear(to-r, blue.300, purple.300)"
+    );
+
     useEffect(() => {
         if (!isChatPage) {
-        setRetrievedLines([]); // 清空检索到的行
+            setRetrievedLines([]);
         }
     }, [pathname, isChatPage, setRetrievedLines]);
+
+    // 导航菜单项配置
+    const navItems = [
+        {
+            href: "/knowledgeAvatars",
+            label: "Knowledge Avatars",
+            icon: FiBook
+        },
+        {
+            href: "/mint",
+            label: "Publish Avatar",
+            icon: FiUploadCloud
+        },
+        {
+            href: `/portfolio/${keylessAccount?.accountAddress.toString()}`,
+            label: "My Portfolio",
+            icon: FiFolder
+        }
+    ];
+
     return (
         <Flex
             as="nav"
-            direction="column" // 垂直排列
-            bg="white" // 背景颜色改为白色
-            color="gray.800" // 字体颜色改为深灰色
-            px={4}
+            direction="column"
+            bg={navBg}
+            color={useColorModeValue("gray.800", "white")}
+            px={6}
             py={8}
-            position="fixed" // 固定在左侧
+            position="fixed"
             top={0}
             left={0}
-            height="100vh" // 占满整个视口高度
-            width="250px" // 设置导航栏宽度
+            height="100vh"
+            width="280px"
             justifyContent="space-between"
-            borderRight="1px solid #E2E8F0" // 添加右侧灰色边界
-            boxShadow="md" // 添加轻微阴影以提升视觉效果
+            borderRight="1px solid"
+            borderColor={borderColor}
+            boxShadow="xl"
+            zIndex="sticky"
         >
-
-            <VStack align="stretch" spacing={3}>
-                <Box
-                    as="button"
-                    onClick={() => router.push("/")}
-                    cursor="pointer"
-                    textAlign="left"
-                    alignItems="center"
-                    display="flex" // 使用 Flex 布局
-                >
-                    {/* Logo 图片 */}
-                    <Box width="40px" height="40px">
-                        <img src="/echo_logo.PNG" alt="AptKnow Logo" style={{width: "100%", height: "100%"}}/>
+            {/* Logo 区域 */}
+            <Box
+                as="button"
+                onClick={() => router.push("/")}
+                cursor="pointer"
+                mb={8}
+                position="relative"
+                _hover={{ transform: "scale(1.02)" }}
+                transition="transform 0.2s"
+            >
+                <Flex align="center">
+                    <Box
+                        width="50px"
+                        height="50px"
+                        bgGradient={brandGradient}
+                        borderRadius="lg"
+                        p={2}
+                        boxShadow="md"
+                    >
+                        <img
+                            src="/echo_logo.PNG"
+                            alt="AptKnow Logo"
+                            style={{
+                                width: "100%",
+                                height: "100%",
+                                filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.1))"
+                            }}
+                        />
                     </Box>
-                    <Text fontSize="3xl" fontWeight="bold">
+                    <Text
+                        fontSize="2xl"
+                        fontWeight="extrabold"
+                        ml={3}
+                        bgGradient={brandGradient}
+                        bgClip="text"
+                    >
                         AptKnow
                     </Text>
-                </Box>
-                {/* 如果是 chat 页面，只显示检索到的行 */}
+                </Flex>
+            </Box>
+
+            {/* 主内容区域 */}
+            <VStack
+                align="stretch"
+                spacing={6}
+                flex={1}
+                overflow="hidden"
+            >
                 {isChatPage ? (
-                    <Box mt={4}>
-                    <Text fontSize="lg" fontWeight="bold" mb={2}>
-                        Retrieved Lines
-                    </Text>
-                    <Box mt={4} maxHeight="1000px" overflowY="auto">
-                    <Divider mb={2}/>
-                    {retrievedLines.slice(0, MAX_LINES).map((line, index) => (
-                        <Box
-                        key={index}
-                        mb={4}
-                        p={3}
-                        bg="gray.50"
-                        borderRadius="md"
-                        boxShadow="sm"
-                        border="1px solid #E2E8F0"
-                        >
-                        <Text
-                            fontSize="sm"
-                            color="gray.700"
-                            fontWeight="medium"
-                            mb={2}
-                            noOfLines={4} // 限制每行显示的最大行数
-                        >
-                            {line.text}
-                        </Text>
-                        <Text fontSize="xs" color="gray.500">
-                            Distance: <strong>{line.distance.toFixed(2)}</strong>
-                        </Text>
+                    <SlideFade in={true} offsetY={20}>
+                        <Box>
+                            <Text
+                                fontSize="lg"
+                                fontWeight="bold"
+                                mb={4}
+                                color={useColorModeValue("gray.600", "gray.300")}
+                            >
+                                📌 Retrieved Context
+                            </Text>
+                            <Divider mb={4} borderColor={borderColor} />
+                            <Box
+                                overflowY="auto"
+                                pr={2}
+                                css={{
+                                    '&::-webkit-scrollbar': { width: '6px' },
+                                    '&::-webkit-scrollbar-track': { bg: 'transparent' },
+                                    '&::-webkit-scrollbar-thumb': {
+                                        bg: useColorModeValue('rgba(66,153,225,0.5)', 'rgba(128,90,213,0.5)'),
+                                        borderRadius: '3px'
+                                    }
+                                }}
+                            >
+                                {retrievedLines.slice(0, MAX_LINES).map((line, index) => (
+                                    <Box
+                                        key={index}
+                                        mb={4}
+                                        p={4}
+                                        bg={useColorModeValue("blue.50", "blue.900")}
+                                        borderRadius="lg"
+                                        boxShadow="sm"
+                                        border="1px solid"
+                                        borderColor={useColorModeValue("blue.100", "blue.800")}
+                                        _hover={{
+                                            transform: "translateY(-2px)",
+                                            boxShadow: "md"
+                                        }}
+                                        transition="all 0.2s"
+                                    >
+                                        <Text
+                                            fontSize="sm"
+                                            color={useColorModeValue("gray.700", "gray.200")}
+                                            fontWeight="medium"
+                                            mb={2}
+                                            noOfLines={4}
+                                        >
+                                            {line.text}
+                                        </Text>
+                                        <Flex justify="space-between" align="center">
+                                            <Text fontSize="xs" color={useColorModeValue("blue.600", "blue.200")}>
+                                                Similarity: <strong>{line.distance.toFixed(2)}</strong>
+                                            </Text>
+                                            <Icon
+                                                as={FiChevronRight}
+                                                color={useColorModeValue("blue.500", "blue.300")}
+                                                boxSize={4}
+                                            />
+                                        </Flex>
+                                    </Box>
+                                ))}
+                                {retrievedLines.length > MAX_LINES && (
+                                    <Link
+                                        fontSize="sm"
+                                        color={useColorModeValue("blue.600", "blue.200")}
+                                        fontWeight="semibold"
+                                        onClick={() => router.push("/details")}
+                                        _hover={{ textDecoration: "underline" }}
+                                        display="flex"
+                                        align="center"
+                                    >
+                                        View More Results
+                                        <Icon as={FiChevronRight} ml={1} />
+                                    </Link>
+                                )}
+                            </Box>
                         </Box>
-                    ))}
-                    {retrievedLines.length > MAX_LINES && (
-                        <Text
-                        fontSize="sm"
-                        color="blue.500"
-                        cursor="pointer"
-                        onClick={() => router.push("/details")}
-                        >
-                        View More
-                        </Text>
-                    )}
-                    </Box>
-                    </Box>
+                    </SlideFade>
                 ) : (
-                    // 如果不是 chat 页面，显示完整的导航栏
-                    <VStack align="stretch" spacing={3}>
-                    <NextLink href="/knowledgeAvatars" passHref>
-                        <Text
-                        px={4}
-                        py={4}
-                        rounded="none"
-                        fontWeight={"bold"}
-                        display="block"
-                        width="100%"
-                        _hover={{ textDecoration: "none", bg: "gray.100" }}
-                        >
-                        Knowledge Avatars
-                        </Text>
-                    </NextLink>
-                    <NextLink href="/mint" passHref>
-                        <Text
-                        px={4}
-                        py={4}
-                        rounded="none"
-                        fontWeight={"bold"}
-                        display="block"
-                        width="100%"
-                        _hover={{ textDecoration: "none", bg: "gray.100" }}
-                        >
-                        Publish Avatar
-                        </Text>
-                    </NextLink>
-                    <NextLink href={`/portfolio/${keylessAccount?.accountAddress.toString()}`} passHref>
-                        <Text
-                        px={4}
-                        py={4}
-                        rounded="none"
-                        fontWeight={"bold"}
-                        display="block"
-                        width="100%"
-                        _hover={{ textDecoration: "none", bg: "gray.100" }}
-                        >
-                        My Portfolio
-                        </Text>
-                    </NextLink>
+                    <VStack
+                        align="stretch"
+                        spacing={2}
+                        flex={1}
+                    >
+                        {navItems.map((item, index) => (
+                            <NextLink key={index} href={item.href} passHref>
+                                <Flex
+                                    align="center"
+                                    p={3}
+                                    borderRadius="lg"
+                                    _hover={{
+                                        bg: menuHoverBg,
+                                        transform: "translateX(4px)"
+                                    }}
+                                    transition="all 0.2s"
+                                    cursor="pointer"
+                                >
+                                    <Icon
+                                        as={item.icon}
+                                        boxSize={5}
+                                        mr={3}
+                                        color={useColorModeValue("gray.600", "gray.300")}
+                                    />
+                                    <Text
+                                        fontSize="md"
+                                        fontWeight="semibold"
+                                        color={useColorModeValue("gray.700", "gray.200")}
+                                    >
+                                        {item.label}
+                                    </Text>
+                                </Flex>
+                            </NextLink>
+                        ))}
                     </VStack>
-                    
                 )}
             </VStack>
 
-            <WalletButtons/>
+            {/* 钱包按钮区域 */}
+            <Box mt={8}>
+                <WalletButtons />
+            </Box>
         </Flex>
     );
 };
