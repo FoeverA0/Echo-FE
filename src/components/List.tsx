@@ -120,7 +120,7 @@ export const List = ({nftTokenObjectAddr}: Props) => {
             .then(() => {
                 console.log("Listed");
                 onClose();
-                onRefresh();
+                window.location.href = `/portfolio/${keylessAccount.accountAddress}`;
             });
     };
 
