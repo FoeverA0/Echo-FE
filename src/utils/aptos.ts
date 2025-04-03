@@ -2,14 +2,14 @@ import {Aptos, AptosConfig, Network, Account} from "@aptos-labs/ts-sdk";
 import {Aptogotchi, AptogotchiTraits, ChangeLog, DocumentInfo} from "./types";
 
 export const APTOGOTCHI_CONTRACT_ADDRESS =
-    "0x7f6b2f15251c366407f67a888e7db74b5ae1b723a014bcbfcaa877cdcb9d7a0d";
+    "0xa1d16681b8cccbab42e034802981fc20673bf3cf93fad2b0c2794f3fea19e344";
 export const COLLECTION_ID =
-    "0x851363e73285ce21df52239e5b24a3589d4cf11988a4803e2d60a9ef5c064177";
+    "0x3b4ee1a8237984f83694ca2d46f190262e8664d65295288dbfa2358c010eda18";
 export const COLLECTION_CREATOR_ADDRESS =
-    "0xe0d84a83719f0e096f491f6eb5d91547136314a1e6ac5770983998ac7477b2f6";
+    "0xc6a318efc4365ab2ca757968cee34ec9a0dc493c1022a35921aff5617d73684e";
 export const COLLECTION_NAME = "Aptogotchi Collection";
 export const MARKETPLACE_CONTRACT_ADDRESS =
-    "0x7f6b2f15251c366407f67a888e7db74b5ae1b723a014bcbfcaa877cdcb9d7a0d";
+    "0xa1d16681b8cccbab42e034802981fc20673bf3cf93fad2b0c2794f3fea19e344";
 export const APT = "0x1::aptos_coin::AptosCoin";
 export const APT_UNIT = 100_000_000;
 
