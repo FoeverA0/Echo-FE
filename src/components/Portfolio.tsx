@@ -39,7 +39,7 @@ export const Portfolio = ({ address }: Props) => {
             {nftsInWallet.map((nft) => {
               return (
                 <NftCard nft={nft} key={nft.address}>
-                  <List nftTokenObjectAddr={nft.address} />
+                    <List nftTokenObjectAddr={nft.address} />
                 </NftCard>
               );
             })}
