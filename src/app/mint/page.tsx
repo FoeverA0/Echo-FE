@@ -1,5 +1,4 @@
 "use client";
-
 import {useKeylessAccount} from "@/context/KeylessAccountContext";
 import {getAptosClient} from "@/utils/aptosClient";
 import {
@@ -17,23 +16,28 @@ import {
     useToast,
     Image,
     Progress,
-    Icon, useColorModeValue,
+    Icon,
+    Select,
+    useColorModeValue,
 } from "@chakra-ui/react";
 import {useState, useRef, ChangeEvent} from "react";
 import {APTOGOTCHI_CONTRACT_ADDRESS, aptos} from "@/utils/aptos";
-import { FiUploadCloud } from "react-icons/fi";
+import {FiUploadCloud} from "react-icons/fi";
+import {BASE_PATH, bodies, ears, faces} from "@/utils/constants";
 
 export default function Page() {
     const brandColor = useColorModeValue("blue.600", "blue.200");
     return (
         <Box maxW="container.lg" mx="auto" px={4} py={8}>
             <VStack spacing={6} align="stretch">
-                <Heading fontSize={{ base: "3xl", md: "4xl" }}
-                         fontWeight="extrabold"
-                         bgGradient={`linear(to-r, ${brandColor}, ${useColorModeValue("purple.600", "purple.300")})`}
-                         bgClip="text"
-                         lineHeight={1.2}
-                textAlign="center">
+                <Heading
+                    fontSize={{base: "3xl", md: "4xl"}}
+                    fontWeight="extrabold"
+                    bgGradient={`linear(to-r, ${brandColor}, ${useColorModeValue("purple.600", "purple.300")})`}
+                    bgClip="text"
+                    lineHeight={1.2}
+                    textAlign="center"
+                >
                     Create Your Unique AptKnow NFT
                 </Heading>
                 <PageContent/>
@@ -119,6 +123,9 @@ function PageContent() {
 function Mint() {
     const [name, setName] = useState<string>("");
     const [desc, setDesc] = useState<string>("");
+    const [ear, setEar] = useState<number>(1);
+    const [face, setFace] = useState<number>(1);
+    const [body, setBody] = useState<number>(1);
     const [showAlert, setShowAlert] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [uploadProgress, setUploadProgress] = useState<number>(0);
@@ -173,9 +180,6 @@ function Mint() {
         }
 
         setIsLoading(true);
-        const body = Math.floor(Math.random() * 4) + 1;
-        const ear = Math.floor(Math.random() * 5) + 1;
-        const face = Math.floor(Math.random() * 3) + 1;
         try {
             await signAndSubmitWithKeylessAccount(
                 keylessAccount,
@@ -205,15 +209,120 @@ function Mint() {
     if (showAlert) {
         return (
             <Alert status="success" variant="subtle" borderRadius="md">
-                <AlertIcon />
+                <AlertIcon/>
                 Your AptKnow NFT has been successfully created! You can view it in your portfolio.
             </Alert>
         );
     }
 
+    const bodyUrl = BASE_PATH + bodies[body];
+    const earUrl = BASE_PATH + ears[ear];
+    const faceUrl = BASE_PATH + faces[face];
+
+    // 修复图片显示问题
+    const aptogotchiImage = (
+        <Box
+            position="relative"
+            w="300px"
+            h="300px"
+            borderRadius="2xl"
+            overflow="hidden"
+            boxShadow="xl"
+            transition="transform 0.3s ease"
+            _hover={{transform: "rotate(-2deg) scale(1.02)"}}
+        >
+            {/* 动画背景层 */}
+            <Box
+                position="absolute"
+                inset={0}
+                bgGradient="radial(blue.100 10%, transparent 80%)"
+                opacity={0.3}
+                _hover={{opacity: 0.5}}
+                transition="opacity 0.3s"
+                zIndex={0}
+            />
+
+            {/* 身体部位图片（调整zIndex层级） */}
+            <Box position="absolute" top="0" left="0" w="100%" h="100%" zIndex={1}>
+                <Image src={bodyUrl} alt="pet body" objectFit="contain" w="100%" h="100%"/>
+            </Box>
+            <Box position="absolute" top="0" left="0" w="100%" h="100%" zIndex={2}>
+                <Image src={faceUrl} alt="pet face" objectFit="contain" w="100%" h="100%"/>
+            </Box>
+            <Box position="absolute" top="0" left="0" w="100%" h="100%" zIndex={3}>
+                <Image src={earUrl} alt="pet ears" objectFit="contain" w="100%" h="100%"/>
+            </Box>
+        </Box>
+    );
+
     return (
         <Box bg="white" borderRadius="xl" boxShadow="md" p={8}>
-            <VStack spacing={6} align="stretch">
+            <VStack spacing={6} align="center">
+                <Flex align="center" gap={8}>
+                    {/* Aptogotchi Image */}
+                    {aptogotchiImage}
+
+                    {/* Selection Fields */}
+                    <VStack spacing={4} align="stretch" w="300px">
+                        {/* Ear Selection */}
+                        <FormControl>
+                            <FormLabel fontWeight="semibold" color="gray.700">
+                                Ear
+                            </FormLabel>
+                            <Select
+                                size="lg"
+                                value={ear.toString()}
+                                onChange={(e) => setEar(Number(e.target.value))}
+                                focusBorderColor="purple.500"
+                            >
+                                {[1, 2, 3, 4, 5, 6].map((num) => (
+                                    <option key={num} value={num - 1}>
+                                        {num}
+                                    </option>
+                                ))}
+                            </Select>
+                        </FormControl>
+
+                        {/* Face Selection */}
+                        <FormControl>
+                            <FormLabel fontWeight="semibold" color="gray.700">
+                                Face
+                            </FormLabel>
+                            <Select
+                                size="lg"
+                                value={face.toString()}
+                                onChange={(e) => setFace(Number(e.target.value))}
+                                focusBorderColor="purple.500"
+                            >
+                                {[1, 2, 3, 4].map((num) => (
+                                    <option key={num} value={num - 1}>
+                                        {num}
+                                    </option>
+                                ))}
+                            </Select>
+                        </FormControl>
+
+                        {/* Body Selection */}
+                        <FormControl>
+                            <FormLabel fontWeight="semibold" color="gray.700">
+                                Body
+                            </FormLabel>
+                            <Select
+                                size="lg"
+                                value={body.toString()}
+                                onChange={(e) => setBody(Number(e.target.value))}
+                                focusBorderColor="purple.500"
+                            >
+                                {[1, 2, 3, 4, 5].map((num) => (
+                                    <option key={num} value={num - 1}>
+                                        {num}
+                                    </option>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </VStack>
+                </Flex>
+
                 {/* Name Field */}
                 <FormControl>
                     <FormLabel fontWeight="semibold" color="gray.700">
@@ -254,7 +363,7 @@ function Mint() {
                         p={6}
                         textAlign="center"
                         cursor="pointer"
-                        _hover={{ borderColor: "purple.300", bg: "purple.50" }}
+                        _hover={{borderColor: "purple.300", bg: "purple.50"}}
                         transition="all 0.2s"
                         onClick={triggerFileInput}
                     >
@@ -262,10 +371,10 @@ function Mint() {
                             type="file"
                             ref={fileInputRef}
                             onChange={handleFileChange}
-                            style={{ display: 'none' }}
+                            style={{display: 'none'}}
                         />
                         <VStack spacing={3}>
-                            <Icon as={FiUploadCloud} w={10} h={10} color="purple.500" />
+                            <Icon as={FiUploadCloud} w={10} h={10} color="purple.500"/>
                             <Text fontWeight="medium" color="gray.600">
                                 {fileName || "Click to upload a file"}
                             </Text>
