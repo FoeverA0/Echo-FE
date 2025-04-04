@@ -171,34 +171,34 @@ export const NavBar = () => {
                                 }}
                             >
                                 {retrievedLines.slice(0, MAX_LINES).map((line, index) => (
-                                    <Box
-                                        key={index}
-                                        mb={4}
-                                        p={4}
-                                        bg={retrievedBoxBg}
-                                        borderRadius="lg"
-                                        boxShadow="sm"
-                                        border="1px solid"
-                                        borderColor={retrievedBorderColor}
-                                        _hover={{
-                                            transform: "translateY(-2px)",
-                                            boxShadow: "md"
-                                        }}
-                                        transition="all 0.2s"
-                                    >
-                                        <Text
-                                            fontSize="sm"
-                                            color={retrievedTextColor}
-                                            fontWeight="medium"
-                                            mb={3}
-                                            noOfLines={4}
+                                    <Link key={index} href={`/nft/0x${line.collection}`} target="_blank"
+                                          rel="noopener noreferrer">
+                                        <Box
+                                            key={index}
+                                            mb={4}
+                                            p={4}
+                                            bg={retrievedBoxBg}
+                                            borderRadius="lg"
+                                            boxShadow="sm"
+                                            border="1px solid"
+                                            borderColor={retrievedBorderColor}
+                                            _hover={{
+                                                transform: "translateY(-2px)",
+                                                boxShadow: "md"
+                                            }}
+                                            transition="all 0.2s"
                                         >
-                                            {line.text}
-                                        </Text>
+                                            <Text
+                                                fontSize="sm"
+                                                color={retrievedTextColor}
+                                                fontWeight="medium"
+                                                mb={3}
+                                                noOfLines={4}
+                                            >
+                                                {line.text}
+                                            </Text>
 
-                                        {/* 元数据区块 */}
-                                        <Link href={`/nft/0x${line.collection}`} target="_blank"
-                                              rel="noopener noreferrer">
+                                            {/* 元数据区块 */}
                                             <VStack spacing={1} align="stretch" mb={3}>
                                                 <MetadataItem
                                                     label="Knowledge Avatar"
@@ -213,15 +213,15 @@ export const NavBar = () => {
                                                     value={line.source_id}
                                                 />
                                             </VStack>
-                                        </Link>
 
-                                        <Flex justify="space-between" align="center">
-                                            <Text fontSize="xs" color={linkColor}>
-                                                Similarity: <strong>{line.distance.toFixed(2)}</strong>
-                                            </Text>
-                                            <Icon as={FiChevronRight} color={linkHoverColor} boxSize={4}/>
-                                        </Flex>
-                                    </Box>
+                                            <Flex justify="space-between" align="center">
+                                                <Text fontSize="xs" color={linkColor}>
+                                                    Similarity: <strong>{line.distance.toFixed(2)}</strong>
+                                                </Text>
+                                                <Icon as={FiChevronRight} color={linkHoverColor} boxSize={4}/>
+                                            </Flex>
+                                        </Box>
+                                    </Link>
                                 ))}
                                 {retrievedLines.length > MAX_LINES && (
                                     <Link
