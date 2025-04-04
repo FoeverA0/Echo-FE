@@ -80,7 +80,8 @@ export const NftCard = ({ nft, children }: Props) => {
                             </Link>
                         )}
                     </Text>
-                    <Text fontSize="md" color="GrayText">Brief of NFT</Text>
+                    <Text fontSize="md" color="GrayText">
+                        {nft.description ? nft.description.substring(0, 47) : 'No description available'}</Text>
                     <Box marginTop={4}>{children}</Box>
                 </Box>
             </HStack>

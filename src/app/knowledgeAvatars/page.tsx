@@ -65,7 +65,7 @@ export default function Page() {
                 borderBottom="2px solid"
                 borderColor={useColorModeValue("gray.200", "gray.700")}
             >
-                {["All NFTs", "NFT Listings"].map((option) => (
+                {["All Knowledge", "Knowledge Listings"].map((option) => (
                     <Button
                         key={option}
                         variant="unstyled"

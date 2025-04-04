@@ -1,7 +1,7 @@
 "use client";
 
-import { useKeylessAccount } from "@/context/KeylessAccountContext";
-import { getAptosClient } from "@/utils/aptosClient";
+import {useKeylessAccount} from "@/context/KeylessAccountContext";
+import {getAptosClient} from "@/utils/aptosClient";
 import {
     Alert,
     AlertIcon,
@@ -12,43 +12,32 @@ import {
     FormLabel,
     Heading,
     Input,
-    useColorModeValue,
-    SlideFade,
-    VStack,
     Text,
+    VStack,
+    useToast,
+    Image,
+    Progress,
+    Icon, useColorModeValue,
 } from "@chakra-ui/react";
-import { useState } from "react";
-import { APTOGOTCHI_CONTRACT_ADDRESS, aptos } from "@/utils/aptos";
-import { motion } from "framer-motion";
-import { FaMagic, FaCoins, FaCommentDots } from "react-icons/fa";
-
-const MotionBox = motion(Box);
+import {useState, useRef, ChangeEvent} from "react";
+import {APTOGOTCHI_CONTRACT_ADDRESS, aptos} from "@/utils/aptos";
+import { FiUploadCloud } from "react-icons/fi";
 
 export default function Page() {
-    const brandGradient = useColorModeValue(
-        "linear(to-r, blue.600, purple.600)",
-        "linear(to-r, blue.300, purple.300)"
-    );
-
+    const brandColor = useColorModeValue("blue.600", "blue.200");
     return (
-        <Box maxW="6xl" mx="auto" p={8}>
-            <MotionBox
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-            >
-                <Heading
-                    textAlign="center"
-                    mb={8}
-                    fontSize="4xl"
-                    fontWeight="extrabold"
-                    bgGradient={brandGradient}
-                    bgClip="text"
-                >
-                    Create Your Knowledge Avatar
+        <Box maxW="container.lg" mx="auto" px={4} py={8}>
+            <VStack spacing={6} align="stretch">
+                <Heading fontSize={{ base: "3xl", md: "4xl" }}
+                         fontWeight="extrabold"
+                         bgGradient={`linear(to-r, ${brandColor}, ${useColorModeValue("purple.600", "purple.300")})`}
+                         bgClip="text"
+                         lineHeight={1.2}
+                textAlign="center">
+                    Create Your Unique AptKnow NFT
                 </Heading>
-                <PageContent />
-            </MotionBox>
+                <PageContent/>
+            </VStack>
         </Box>
     );
 }
@@ -114,189 +103,209 @@ async function signAndSubmitWithKeylessAccount(
 }
 
 function PageContent() {
-    const { keylessAccount } = useKeylessAccount();
-    const alertBg = useColorModeValue("blue.50", "blue.900");
-
+    const {keylessAccount, setKeylessAccount} = useKeylessAccount();
     if (!keylessAccount) {
         return (
-            <Alert
-                status="warning"
-                variant="subtle"
-                borderRadius="lg"
-                bg={alertBg}
-                maxW="600px"
-                mx="auto"
-                my={8}
-            >
-                <AlertIcon />
-                <Text>Connect wallet to create your Knowledge Avatar</Text>
+            <Alert status="warning" variant="left-accent" borderRadius="md">
+                <AlertIcon/>
+                Please connect your wallet to create your AptKnow NFT.
             </Alert>
         );
     }
 
-    return <Mint />;
+    return <Mint/>;
 }
 
 function Mint() {
     const [name, setName] = useState<string>("");
-    const [coin, setCoin] = useState<string>("");
     const [desc, setDesc] = useState<string>("");
-    const [showAlert, setShowAlert] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-    const { keylessAccount } = useKeylessAccount();
+    const [showAlert, setShowAlert] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [uploadProgress, setUploadProgress] = useState<number>(0);
+    const [fileName, setFileName] = useState<string>("");
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const toast = useToast();
+    const {keylessAccount} = useKeylessAccount();
 
-    // 颜色模式相关变量
-    const inputBg = useColorModeValue("white", "gray.800");
-    const borderColor = useColorModeValue("gray.200", "gray.600");
-    const focusBorderColor = useColorModeValue("blue.500", "blue.300");
-    const buttonGradient = useColorModeValue(
-        "linear(to-r, blue.500, purple.500)",
-        "linear(to-r, blue.300, purple.300)"
-    );
+    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            const file = e.target.files[0];
+            setFileName(file.name);
 
-    const FormField = ({
-                           label,
-                           icon,
-                           value,
-                           onChange,
-                           placeholder
-                       }: {
-        label: string;
-        icon: React.ReactElement;
-        value: string;
-        onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-        placeholder: string;
-    }) => (
-        <MotionBox
-            w="100%"
-            maxW="600px"
-            mb={6}
-            whileHover={{ scale: 1.02 }}
-        >
-            <FormControl>
-                <Flex align="center" gap={4}>
-                    <Box color="blue.500" fontSize="xl">
-                        {icon}
-                    </Box>
-                    <Input
-                        bg={inputBg}
-                        border="2px solid"
-                        borderColor={borderColor}
-                        _focus={{
-                            borderColor: focusBorderColor,
-                            boxShadow: `0 0 0 1px ${focusBorderColor}`
-                        }}
-                        borderRadius="lg"
-                        p={6}
-                        fontSize="lg"
-                        placeholder={placeholder}
-                        value={value}
-                        onChange={onChange}
-                        transition="all 0.2s"
-                    />
-                </Flex>
-            </FormControl>
-        </MotionBox>
-    );
+            // Simulate upload progress
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 10;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                }
+                setUploadProgress(progress);
+            }, 200);
+        }
+    };
+
+    const triggerFileInput = () => {
+        fileInputRef.current?.click();
+    };
 
     const onSubmit = async () => {
-        if (!keylessAccount) return;
+        if (!keylessAccount) {
+            toast({
+                title: "Wallet not connected",
+                description: "Please connect your wallet first",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+            });
+            return;
+        }
 
+        if (!name) {
+            toast({
+                title: "Name required",
+                description: "Please enter a name for your AptKnow",
+                status: "warning",
+                duration: 5000,
+                isClosable: true,
+            });
+            return;
+        }
+
+        setIsLoading(true);
+        const body = Math.floor(Math.random() * 4) + 1;
+        const ear = Math.floor(Math.random() * 5) + 1;
+        const face = Math.floor(Math.random() * 3) + 1;
         try {
-            setIsLoading(true);
-            const body = Math.floor(Math.random() * 4) + 1;
-            const ear = Math.floor(Math.random() * 5) + 1;
-            const face = Math.floor(Math.random() * 3) + 1;
-
             await signAndSubmitWithKeylessAccount(
                 keylessAccount,
-                `${APTOGOTCHI_CONTRACT_ADDRESS}::main::create_echo` as const,
+                `${APTOGOTCHI_CONTRACT_ADDRESS}::main::create_echo` as `${string}::${string}::${string}`,
                 [],
-                [name, body.toString(), ear.toString(), face.toString(), coin, desc]
+                [name, body.toString(), ear.toString(), face.toString(), "0x0926fce9c184d27a0ccca7330a91db9787cbf2f052d79997bfc273682e69a129", desc]
             );
 
             setShowAlert(true);
-            setTimeout(() => setShowAlert(false), 5000);
+            setTimeout(() => {
+                setShowAlert(false);
+            }, 5000);
         } catch (error) {
             console.error("Minting failed:", error);
+            toast({
+                title: "Minting failed",
+                description: "There was an error creating your AptKnow NFT",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+            });
         } finally {
             setIsLoading(false);
         }
     };
 
+    if (showAlert) {
+        return (
+            <Alert status="success" variant="subtle" borderRadius="md">
+                <AlertIcon />
+                Your AptKnow NFT has been successfully created! You can view it in your portfolio.
+            </Alert>
+        );
+    }
+
     return (
-        <Box w="100%">
-            {showAlert && (
-                <SlideFade in={showAlert} offsetY={-20}>
-                    <Alert
-                        status="success"
-                        variant="solid"
-                        borderRadius="lg"
-                        boxShadow="xl"
-                        maxW="600px"
-                        mx="auto"
-                        mb={8}
-                    >
-                        <AlertIcon boxSize={6} />
-                        <VStack align="start" spacing={1}>
-                            <Text fontWeight="bold">Creation Successful!</Text>
-                            <Text>Your Knowledge Avatar is now available in Portfolio</Text>
-                        </VStack>
-                    </Alert>
-                </SlideFade>
-            )}
-
-            <VStack spacing={8} w="100%">
-                <FormField
-                    label="Name"
-                    icon={<FaMagic />}
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Unique Avatar Name (e.g. AI Expert)"
-                />
-
-                <FormField
-                    label="Coin Address"
-                    icon={<FaCoins />}
-                    value={coin}
-                    onChange={(e) => setCoin(e.target.value)}
-                    placeholder="APT Coin Address (0x...)"
-                />
-
-                <FormField
-                    label="Description"
-                    icon={<FaCommentDots />}
-                    value={desc}
-                    onChange={(e) => setDesc(e.target.value)}
-                    placeholder="Specialized Knowledge Description"
-                />
-
-                <MotionBox
-                    w="100%"
-                    maxW="600px"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                >
-                    <Button
-                        w="100%"
+        <Box bg="white" borderRadius="xl" boxShadow="md" p={8}>
+            <VStack spacing={6} align="stretch">
+                {/* Name Field */}
+                <FormControl>
+                    <FormLabel fontWeight="semibold" color="gray.700">
+                        AptKnow Name
+                    </FormLabel>
+                    <Input
                         size="lg"
-                        height="60px"
-                        bgGradient={buttonGradient}
-                        color="white"
-                        fontSize="xl"
-                        fontWeight="bold"
-                        borderRadius="xl"
-                        isLoading={isLoading}
-                        loadingText="Creating..."
-                        _hover={{
-                            boxShadow: "2xl"
-                        }}
-                        onClick={onSubmit}
-                        rightIcon={<FaMagic />}
+                        placeholder="Give your AptKnow a unique name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        focusBorderColor="purple.500"
+                    />
+                </FormControl>
+
+                {/* Description Field */}
+                <FormControl>
+                    <FormLabel fontWeight="semibold" color="gray.700">
+                        Description
+                    </FormLabel>
+                    <Input
+                        size="lg"
+                        placeholder="Tell us about your AptKnow's description"
+                        value={desc}
+                        onChange={(e) => setDesc(e.target.value)}
+                        focusBorderColor="purple.500"
+                    />
+                </FormControl>
+
+                {/* File Upload Field */}
+                <FormControl>
+                    <FormLabel fontWeight="semibold" color="gray.700">
+                        Upload File
+                    </FormLabel>
+                    <Box
+                        border="2px dashed"
+                        borderColor="gray.200"
+                        borderRadius="lg"
+                        p={6}
+                        textAlign="center"
+                        cursor="pointer"
+                        _hover={{ borderColor: "purple.300", bg: "purple.50" }}
+                        transition="all 0.2s"
+                        onClick={triggerFileInput}
                     >
-                        Create Knowledge Avatar
-                    </Button>
-                </MotionBox>
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            onChange={handleFileChange}
+                            style={{ display: 'none' }}
+                        />
+                        <VStack spacing={3}>
+                            <Icon as={FiUploadCloud} w={10} h={10} color="purple.500" />
+                            <Text fontWeight="medium" color="gray.600">
+                                {fileName || "Click to upload a file"}
+                            </Text>
+                            <Text fontSize="sm" color="gray.500">
+                                Max file size: 100MB
+                            </Text>
+                        </VStack>
+                    </Box>
+                    {fileName && (
+                        <Box mt={3}>
+                            <Text fontSize="sm" mb={1}>
+                                Uploading: {fileName}
+                            </Text>
+                            <Progress
+                                value={uploadProgress}
+                                size="sm"
+                                colorScheme="purple"
+                                borderRadius="full"
+                                hasStripe={uploadProgress < 100}
+                            />
+                            {uploadProgress === 100 && (
+                                <Text fontSize="sm" color="green.500" mt={1}>
+                                    Upload complete!
+                                </Text>
+                            )}
+                        </Box>
+                    )}
+                </FormControl>
+
+                <Button
+                    bgGradient="linear(to-r, blue.600, purple.600)"
+                    size="lg"
+                    colorScheme="purple"
+                    onClick={onSubmit}
+                    isLoading={isLoading}
+                    loadingText="Creating..."
+                    mt={4}
+                >
+                    Create AptKnow NFT
+                </Button>
             </VStack>
         </Box>
     );
