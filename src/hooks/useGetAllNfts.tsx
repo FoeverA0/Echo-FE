@@ -7,10 +7,18 @@ export const useGetAllNfts = () => {
   useEffect(() => {
     getAllAptogotchis().then(async (res) => {
       const aptogotchiWithTraits = [];
+      console.log(res);
       for (const aptogotchi of res) {
-        const [_, traits] = await getAptogotchi(aptogotchi.address);
+        const [name, traits, description, documents, change_log, whitelist, coin_type, owner] = await getAptogotchi(aptogotchi.address);
         aptogotchiWithTraits.push({
-          ...aptogotchi,
+          name,
+          address: aptogotchi.address,
+          description,
+          documents,
+          change_log,
+          whitelist,
+          coin_type,
+          owner,
           ...traits,
         });
       }
