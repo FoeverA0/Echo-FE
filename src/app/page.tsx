@@ -56,7 +56,7 @@ export default function Page() {
           align="center"
           minH="100vh"
           p={{ base: 4, md: 8 }}
-          bg={useColorModeValue("gray.50", "gray.900")}
+          //bg={useColorModeValue("gray.50", "gray.900")}
       >
         <MotionBox
             initial={{ opacity: 0, y: 20 }}
@@ -127,6 +127,7 @@ export default function Page() {
                     rightIcon={<FaArrowRight />}
                     px={8}
                     h="48px"
+                    bgGradient="linear(to-r, blue.600, purple.600)"
                     onClick={() => question.trim() && router.push(`/chat?query=${encodeURIComponent(question)}`)}
                     _hover={{
                       animation: `${pulse} 1s ease infinite`,

@@ -25,7 +25,7 @@ export default function Page() {
             direction="column"
             minH="100vh"
             p={{ base: 4, md: 8 }}
-            bg={useColorModeValue("gray.50", "gray.900")}
+            //bg={useColorModeValue("gray.50", "gray.900")}
         >
             {/* 标题部分 */}
             <MotionBox
