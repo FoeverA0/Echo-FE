@@ -23,7 +23,7 @@ export const AllNfts = ({ limit }: AllNftsProps) => {
       <Loading /> {/* 显示加载动画 */}
     </Box>
   ) : (
-    <SimpleGrid spacing={10} columns={3}>
+    <SimpleGrid spacing={10} columns={2}>
       {displayedNfts.map((nft) => {
         return <NftCard nft={nft} key={nft.address} />;
       })}
