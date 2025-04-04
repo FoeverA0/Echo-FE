@@ -171,7 +171,7 @@ export const NavBar = () => {
                                 }}
                             >
                                 {retrievedLines.slice(0, MAX_LINES).map((line, index) => (
-                                    <Link key={index} href={`/nft/0x${line.collection}`} passHref>
+                                    <Link key={index} href={`/nft/0x${line.collection}`}>
                                         <Box
                                             key={index}
                                             mb={4}
