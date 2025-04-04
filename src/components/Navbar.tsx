@@ -208,7 +208,7 @@ export const NavBar = () => {
                                                     value={`0x${line.contributor_address}`}
                                                 />
                                                 <MetadataItem
-                                                    label="Source ID"
+                                                    label="Signature"
                                                     value={line.source_id}
                                                 />
                                             </VStack>
