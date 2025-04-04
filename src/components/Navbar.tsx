@@ -111,10 +111,10 @@ export const NavBar = () => {
                     <Box
                         width="50px"
                         height="50px"
-                        bgGradient={brandGradient}
-                        borderRadius="lg"
+                        //bgGradient={brandGradient}
+                        //borderRadius="lg"
                         p={2}
-                        boxShadow="md"
+                        //boxShadow="md"
                     >
                         <img
                             src="/echo_logo.PNG"

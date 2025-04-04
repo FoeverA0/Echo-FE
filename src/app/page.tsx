@@ -121,7 +121,7 @@ export default function Page() {
                         bg={cardBg}
                     >
                         <Textarea
-                            placeholder="Ask anything about Web3 knowledge..."
+                            placeholder="Search anything you want..."
                             value={question}
                             onChange={(e) => setQuestion(e.target.value)}
                             onKeyDown={handleKeyDown}
@@ -148,6 +148,21 @@ export default function Page() {
                                 _focus={{borderColor: focusBorderColor}}
                             >
                             </Select>
+                            <Box
+                                mx={4}
+                                display="flex"
+                                alignItems="center"
+                                color="purple.600"
+                                fontSize="md"
+                                fontWeight="bold"
+                                textShadow="0 1px 1px rgba(0,0,0,0.1)"
+                                px={3}
+                                py={1}
+                                borderRadius="md"
+                                bg="purple.50"
+                            >
+                                per search fee: 0.001APT
+                            </Box>
                             <Button
                                 colorScheme="blue"
                                 rightIcon={<FaArrowRight/>}
@@ -194,7 +209,7 @@ export default function Page() {
                                                 <Stack spacing={1}>
                                                     <Text fontSize="lg" fontWeight="600">
                                                         One-time payment of <Text as="span" color="blue.600"
-                                                                                  fontSize="xl">APT</Text>
+                                                                                  fontSize="xl">0.001APT</Text>
                                                     </Text>
                                                     <Text fontSize="sm" color="gray.600">
                                                         You will be charged immediately via your keyless wallet.

@@ -83,7 +83,7 @@ export const NftCard = ({ nft, children }: Props) => {
                     <Text fontSize="md" color="GrayText">
                        Brief: {nft.description ? nft.description.substring(0, 47) : 'No description available'}</Text>
                     <Text fontSize="md" color="GrayText">
-                       Per Search Fee: {nft.per_search_fee ? nft.per_search_fee : '0'} APT</Text>
+                       Per Search Fee: {nft.per_search_fee ? nft.per_search_fee/100000 : '0'} APT</Text>
                     <Box marginTop={4}>{children}</Box>
                 </Box>
             </HStack>

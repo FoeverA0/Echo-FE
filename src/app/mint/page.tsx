@@ -129,32 +129,45 @@ function Mint() {
     const [fee, setFee] = useState<number>(0);
     const [showAlert, setShowAlert] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [uploadProgress, setUploadProgress] = useState<number>(0);
-    const [fileName, setFileName] = useState<string>("");
+    const [files, setFiles] = useState<Array<{ name: string; progress: number }>>([]);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const toast = useToast();
     const {keylessAccount} = useKeylessAccount();
 
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
-            const file = e.target.files[0];
-            setFileName(file.name);
+            const newFiles = Array.from(e.target.files).map(file => ({
+                name: file.name,
+                progress: 0
+            }));
 
-            // Simulate upload progress
-            let progress = 0;
-            const interval = setInterval(() => {
-                progress += Math.random() * 10;
-                if (progress >= 100) {
-                    progress = 100;
-                    clearInterval(interval);
-                }
-                setUploadProgress(progress);
-            }, 200);
+            setFiles(prev => [...prev, ...newFiles]);
+
+            newFiles.forEach((file) => {
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += Math.random() * 10;
+                    if (progress >= 100) {
+                        progress = 100;
+                        clearInterval(interval);
+                    }
+                    setFiles(prev => prev.map(f =>
+                        f.name === file.name ? { ...f, progress: Math.min(progress, 100) } : f
+                    ));
+                }, 200);
+            });
         }
     };
 
     const triggerFileInput = () => {
-        fileInputRef.current?.click();
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+            fileInputRef.current.click();
+        }
+    };
+
+    const removeFile = (fileName: string) => {
+        setFiles(prev => prev.filter(f => f.name !== fileName));
     };
 
     const onSubmit = async () => {
@@ -369,7 +382,7 @@ function Mint() {
                 {/* File Upload Field */}
                 <FormControl>
                     <FormLabel fontWeight="semibold" color="gray.700">
-                        Upload File
+                        Upload Files
                     </FormLabel>
                     <Box
                         border="2px dashed"
@@ -378,7 +391,7 @@ function Mint() {
                         p={6}
                         textAlign="center"
                         cursor="pointer"
-                        _hover={{borderColor: "purple.300", bg: "purple.50"}}
+                        _hover={{ borderColor: "purple.300", bg: "purple.50" }}
                         transition="all 0.2s"
                         onClick={triggerFileInput}
                     >
@@ -386,35 +399,68 @@ function Mint() {
                             type="file"
                             ref={fileInputRef}
                             onChange={handleFileChange}
-                            style={{display: 'none'}}
+                            style={{ display: 'none' }}
+                            multiple
                         />
                         <VStack spacing={3}>
-                            <Icon as={FiUploadCloud} w={10} h={10} color="purple.500"/>
+                            <Icon as={FiUploadCloud} w={10} h={10} color="purple.500" />
                             <Text fontWeight="medium" color="gray.600">
-                                {fileName || "Click to upload a file"}
+                                Click to upload files
                             </Text>
                             <Text fontSize="sm" color="gray.500">
-                                Max file size: 100MB
+                                Max file size: 100MB (Multiple files supported)
                             </Text>
                         </VStack>
                     </Box>
-                    {fileName && (
+
+                    {files.length > 0 && (
                         <Box mt={3}>
-                            <Text fontSize="sm" mb={1}>
-                                Uploading: {fileName}
+                            <Text fontSize="sm" mb={2} color="gray.600">
+                                Selected files:
                             </Text>
-                            <Progress
-                                value={uploadProgress}
-                                size="sm"
-                                colorScheme="purple"
-                                borderRadius="full"
-                                hasStripe={uploadProgress < 100}
-                            />
-                            {uploadProgress === 100 && (
-                                <Text fontSize="sm" color="green.500" mt={1}>
-                                    Upload complete!
-                                </Text>
-                            )}
+                            {files.map((file, index) => (
+                                <Box
+                                    key={index}
+                                    mb={3}
+                                    p={2}
+                                    bg="gray.50"
+                                    borderRadius="md"
+                                    _hover={{ bg: "gray.100" }}
+                                    transition="background 0.2s"
+                                >
+                                    <Flex justify="space-between" align="center" mb={1}>
+                                        <Text
+                                            fontSize="sm"
+                                            isTruncated
+                                            maxW={{ base: "60%", md: "70%" }}
+                                            title={file.name}
+                                        >
+                                            {file.name}
+                                        </Text>
+                                        <Button
+                                            size="xs"
+                                            colorScheme="red"
+                                            variant="ghost"
+                                            onClick={() => removeFile(file.name)}
+                                            aria-label={`Remove ${file.name}`}
+                                        >
+                                            Remove
+                                        </Button>
+                                    </Flex>
+                                    <Progress
+                                        value={file.progress}
+                                        size="sm"
+                                        colorScheme={file.progress === 100 ? "green" : "purple"}
+                                        borderRadius="full"
+                                        hasStripe={file.progress < 100}
+                                    />
+                                    {file.progress === 100 && (
+                                        <Text fontSize="xs" color="green.500" mt={1}>
+                                            Upload complete!
+                                        </Text>
+                                    )}
+                                </Box>
+                            ))}
                         </Box>
                     )}
                 </FormControl>

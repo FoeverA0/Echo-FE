@@ -30,7 +30,18 @@ export const AllNfts = ({limit}: AllNftsProps) => {
                 return (
                     <NftCard nft={nft} key={nft.address}>
                         <Link href={{ pathname: '/chat', query: { id: nft.address, name: nft.name } }} passHref>
-                            <Button width={160}>
+                            <Button mx={4}
+                                    display="flex"
+                                    alignItems="center"
+                                    color="purple.600"
+                                    fontSize="md"
+                                    fontWeight="bold"
+                                    textShadow="0 1px 1px rgba(0,0,0,0.1)"
+                                    px={3}
+                                    py={1}
+                                    borderRadius="md"
+                                    bg="purple.50"
+                                    width={200}>
                                 search
                             </Button>
                         </Link>

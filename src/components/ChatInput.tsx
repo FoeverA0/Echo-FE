@@ -95,7 +95,7 @@ export const ChatInput = ({
             _hover={{ transform: "translateY(-1px)" }}
             transition="all 0.2s"
           >
-            Send
+            Search
           </Button>
         </Flex>
       </Flex>
