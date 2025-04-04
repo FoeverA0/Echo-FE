@@ -171,8 +171,7 @@ export const NavBar = () => {
                                 }}
                             >
                                 {retrievedLines.slice(0, MAX_LINES).map((line, index) => (
-                                    <Link key={index} href={`/nft/0x${line.collection}`} target="_blank"
-                                          rel="noopener noreferrer">
+                                    <Link key={index} href={`/nft/0x${line.collection}`} passHref>
                                         <Box
                                             key={index}
                                             mb={4}
@@ -228,8 +227,6 @@ export const NavBar = () => {
                                         fontSize="sm"
                                         color={linkColor}
                                         fontWeight="semibold"
-                                        onClick={() => router.push("/details")}
-                                        _hover={{textDecoration: "underline"}}
                                         display="flex"
                                     >
                                         View More Results
