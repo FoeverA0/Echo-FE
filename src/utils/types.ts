@@ -7,6 +7,7 @@ export type Aptogotchi = {
   whitelist: string[];
   coin_type: string;
   owner: string;
+  per_search_fee: number;
 };
 
 export type AptogotchiTraits = {

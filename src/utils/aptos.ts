@@ -20,7 +20,7 @@ export const aptos = new Aptos(config);
 
 export const getAptogotchi = async (
     aptogotchiObjectAddr: string
-): Promise<[string, AptogotchiTraits, string, DocumentInfo[], ChangeLog[], Array<string>, string, string]> => {
+): Promise<[string, AptogotchiTraits, string, DocumentInfo[], ChangeLog[], Array<string>, string, string, number]> => {
     //console.log("aptogotchiObjectAddr", aptogotchiObjectAddr);
     const aptogotchi = await aptos.view({
         payload: {
@@ -37,7 +37,9 @@ export const getAptogotchi = async (
         aptogotchi[4] as ChangeLog[],
         aptogotchi[5] as string[],
         aptogotchi[6] as string,
-        aptogotchi[7] as string];
+        aptogotchi[7] as string,
+        aptogotchi[8] as number
+    ];
 };
 
 export const mintAptogotchi = async (

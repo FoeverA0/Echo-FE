@@ -8,7 +8,7 @@ export const useGetNftsByOwner = (ownerAddr: string) => {
         getUserOwnedAptogotchis(ownerAddr).then(async (res) => {
             const aptogotchiWithTraits = [];
             for (const aptogotchi of res) {
-                const [_, traits, description, documents, change_log, whitelist, coin_type, owner] = await getAptogotchi(aptogotchi.token_data_id);
+                const [_, traits, description, documents, change_log, whitelist, coin_type, owner, per_search_fee] = await getAptogotchi(aptogotchi.token_data_id);
                 aptogotchiWithTraits.push({
                     name: aptogotchi.current_token_data?.token_name || "no name",
                     address: aptogotchi.token_data_id,
@@ -18,6 +18,7 @@ export const useGetNftsByOwner = (ownerAddr: string) => {
                     whitelist,
                     coin_type,
                     owner,
+                    per_search_fee,
                     ...traits,
                 });
             }

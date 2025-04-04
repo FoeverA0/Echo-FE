@@ -126,6 +126,7 @@ function Mint() {
     const [ear, setEar] = useState<number>(1);
     const [face, setFace] = useState<number>(1);
     const [body, setBody] = useState<number>(1);
+    const [fee, setFee] = useState<number>(0);
     const [showAlert, setShowAlert] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [uploadProgress, setUploadProgress] = useState<number>(0);
@@ -185,7 +186,7 @@ function Mint() {
                 keylessAccount,
                 `${APTOGOTCHI_CONTRACT_ADDRESS}::main::create_echo` as `${string}::${string}::${string}`,
                 [],
-                [name, body.toString(), ear.toString(), face.toString(), "0x0926fce9c184d27a0ccca7330a91db9787cbf2f052d79997bfc273682e69a129", desc]
+                [name, body.toString(), ear.toString(), face.toString(), "0x0926fce9c184d27a0ccca7330a91db9787cbf2f052d79997bfc273682e69a129", fee, desc]
             );
 
             setShowAlert(true);
@@ -347,6 +348,20 @@ function Mint() {
                         placeholder="Tell us about your AptKnow's description"
                         value={desc}
                         onChange={(e) => setDesc(e.target.value)}
+                        focusBorderColor="purple.500"
+                    />
+                </FormControl>
+
+                {/* SearchFee Field */}
+                <FormControl>
+                    <FormLabel fontWeight="semibold" color="gray.700">
+                        Per Search Fee
+                    </FormLabel>
+                    <Input
+                        size="lg"
+                        placeholder="Set a fee for each search"
+                        value={fee}
+                        onChange={(e) => setFee(Number(e.target.value))}
                         focusBorderColor="purple.500"
                     />
                 </FormControl>
