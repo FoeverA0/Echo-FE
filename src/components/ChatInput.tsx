@@ -19,6 +19,7 @@ export const ChatInput = ({
   const [baseHeight] = useState(60); // 基准高度
   const borderColor = useColorModeValue("gray.300", "gray.600");
   const bgColor = useColorModeValue("white", "gray.800");
+  const focusBorderColor = useColorModeValue("blue.500", "blue.300");
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -74,14 +75,31 @@ export const ChatInput = ({
             placeholder="Smart Search"
             value={selectedKnowledgeBase}
             onChange={(e) => setSelectedKnowledgeBase(e.target.value)}
-            width="220px"
-            size="md"
-            focusBorderColor="blue.300"
-            borderColor="gray.300"
+            flex={1}
+            border="2px solid"
+            borderColor={borderColor}
+            _hover={{borderColor: focusBorderColor}}
+            _focus={{borderColor: focusBorderColor}}
           >
-            <option value="phala">Phala Network</option>
-            <option value="blockchain-general">Blockchain General</option>
+            {/*<option value="phala">Phala Network</option>*/}
+            {/*<option value="blockchain-general">Blockchain General</option>*/}
           </Select>
+
+          <Box
+              mx={4}
+              display="flex"
+              alignItems="center"
+              color="purple.600"
+              fontSize="md"
+              fontWeight="bold"
+              textShadow="0 1px 1px rgba(0,0,0,0.1)"
+              px={3}
+              py={1}
+              borderRadius="md"
+              bg="purple.50"
+          >
+            per search fee: 0.001APT
+          </Box>
 
           <Button
             colorScheme="blue"

@@ -1,6 +1,6 @@
 "use client";
 
-import {Box, Flex, Text, VStack, useColorModeValue} from "@chakra-ui/react";
+import {Box, Flex, Text, VStack, useColorModeValue, HStack, IconButton} from "@chakra-ui/react";
 import {keyframes} from "@emotion/react";
 import {useState, useEffect} from "react";
 import {ChatInput} from "../../components/ChatInput";
@@ -9,6 +9,7 @@ import {searchQuery} from "@/utils/api";
 import {useRetrievedLines} from "@/context/RetrievedLinesContext";
 import {Suspense} from 'react';
 import Loading from "@/components/loading";
+import {FiCopy, FiShare2, FiThumbsDown, FiThumbsUp} from "react-icons/fi";
 
 // 加载动画定义
 const pulse = keyframes`
@@ -182,7 +183,7 @@ export default function ChatPage() {
                                     width: 0,
                                     height: 0,
                                     borderTop: "8px solid transparent",
-                                    borderBottom: "8px solid transparent",
+                                    borderBottom: "8px  solid transparent",
                                     borderRight: `8px solid ${messageBg}`,
                                 }}
                             >
@@ -196,16 +197,62 @@ export default function ChatPage() {
                                             animation={`${pulse} 1.5s infinite`}
                                         />
                                         <Text color={loadingTextColor}>
-                                            Generating response...
+                                            Vector similarity search in progress...
                                         </Text>
                                     </Flex>
                                 ) : (
-                                    <Text fontSize="md" lineHeight="tall" whiteSpace="pre-wrap">
-                                        {message.llm}
-                                    </Text>
+                                    <>
+                                        <Text fontSize="md" lineHeight="tall" whiteSpace="pre-wrap" mb={2}>
+                                            {message.llm}
+                                        </Text>
+
+                                        {/* 新增操作按钮栏 */}
+                                        <Flex
+                                            justify="flex-end"
+                                            mt={2}
+                                            pt={2}
+                                            borderTopWidth="1px"
+                                            borderTopColor={borderColor}
+                                        >
+                                            <HStack spacing={1}>
+                                                <IconButton
+                                                    aria-label="Copy message"
+                                                    icon={<FiCopy />}
+                                                    size="sm"
+                                                    variant="ghost"
+                                                    colorScheme="gray"
+                                                    onClick={() => console.log('Copy:', message.llm)}
+                                                />
+                                                <IconButton
+                                                    aria-label="Share message"
+                                                    icon={<FiShare2 />}
+                                                    size="sm"
+                                                    variant="ghost"
+                                                    colorScheme="gray"
+                                                />
+                                                <IconButton
+                                                    aria-label="Like message"
+                                                    icon={<FiThumbsUp />}
+                                                    size="sm"
+                                                    variant="ghost"
+                                                    colorScheme="blue"
+                                                />
+                                                <IconButton
+                                                    aria-label="Dislike message"
+                                                    icon={<FiThumbsDown />}
+                                                    size="sm"
+                                                    variant="ghost"
+                                                    colorScheme="red"
+                                                />
+                                            </HStack>
+                                        </Flex>
+                                    </>
                                 )}
                             </Box>
                         </Flex>
+
+
+
                     </Flex>
                 ))}
             </VStack>
