@@ -2,9 +2,8 @@ import axios from "axios";
 
 export const searchQuery = async (question: string, collectionName: string) => {
   try {
-    const response = await axios.post("http://127.0.0.1:5000/search", {
+    const response = await axios.post("http://127.0.0.1:5000/search-all-collections", {
       question,
-      collection_name: "aptos_test",
     });
     return response.data; // 返回后端的响应数据
   } catch (error: any) {

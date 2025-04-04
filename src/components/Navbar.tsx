@@ -2,10 +2,10 @@
 import React, { useEffect } from "react";
 import {
     Box, Flex, VStack, Text, Divider, Icon,
-    useColorModeValue, Link, SlideFade
+    useColorModeValue, Link, SlideFade, Tooltip
 } from "@chakra-ui/react";
 import NextLink from "next/link";
-import { FiBook, FiUploadCloud, FiFolder, FiChevronRight } from "react-icons/fi";
+import { FiBook, FiUploadCloud, FiFolder, FiChevronRight, FiInfo } from "react-icons/fi";
 import WalletButtons from "./WalletButtons";
 import { useRouter, usePathname } from "next/navigation";
 import { useRetrievedLines } from "@/context/RetrievedLinesContext";
@@ -19,7 +19,7 @@ export const NavBar = () => {
     const MAX_LINES = 5;
     const isChatPage = pathname === "/chat";
 
-    // 提前计算颜色模式值，避免在 JSX 属性或回调函数中调用 Hook
+    // 颜色模式变量
     const navBg = useColorModeValue("white", "gray.800");
     const menuHoverBg = useColorModeValue("blue.50", "blue.800");
     const borderColor = useColorModeValue("gray.200", "gray.700");
@@ -34,6 +34,7 @@ export const NavBar = () => {
     const linkColor = useColorModeValue("blue.600", "blue.200");
     const linkHoverColor = useColorModeValue("blue.500", "blue.300");
     const scrollbarThumbColor = useColorModeValue('rgba(66,153,225,0.5)', 'rgba(128,90,213,0.5)');
+    const metadataColor = useColorModeValue("gray.600", "gray.400");
 
     useEffect(() => {
         if (!isChatPage) {
@@ -59,6 +60,23 @@ export const NavBar = () => {
             icon: FiFolder
         }
     ];
+
+    // 元数据展示组件
+    const MetadataItem = ({ label, value }) => (
+        <Flex align="center" fontSize="xs" color={metadataColor}>
+            <Text fontWeight="semibold" mr={1}>{label}:</Text>
+            <Tooltip label={value} placement="top" hasArrow>
+                <Text 
+                    fontFamily="monospace" 
+                    noOfLines={1} 
+                    cursor="help"
+                    _hover={{ textDecoration: "underline dotted" }}
+                >
+                    {value}
+                </Text>
+            </Tooltip>
+        </Flex>
+    );
 
     return (
         <Flex
@@ -125,9 +143,20 @@ export const NavBar = () => {
                 {isChatPage ? (
                     <SlideFade in={true} offsetY={20}>
                         <Box>
-                            <Text fontSize="lg" fontWeight="bold" mb={4} color={retrievedTextColor}>
-                                📌 Retrieved Context
-                            </Text>
+                            <Flex align="center" mb={4}>
+                                <Text fontSize="lg" fontWeight="bold" color={retrievedTextColor}>
+                                    📌 Retrieved Context
+                                </Text>
+                                <Tooltip 
+                                    label="Verified blockchain metadata" 
+                                    placement="top" 
+                                    hasArrow
+                                >
+                                    <span>
+                                        <Icon as={FiInfo} ml={2} boxSize={4} color={metadataColor} />
+                                    </span>
+                                </Tooltip>
+                            </Flex>
                             <Divider mb={4} borderColor={borderColor} />
                             <Box
                                 overflowY="auto"
@@ -157,9 +186,32 @@ export const NavBar = () => {
                                         }}
                                         transition="all 0.2s"
                                     >
-                                        <Text fontSize="sm" color={retrievedTextColor} fontWeight="medium" mb={2} noOfLines={4}>
+                                        <Text 
+                                            fontSize="sm" 
+                                            color={retrievedTextColor} 
+                                            fontWeight="medium" 
+                                            mb={3} 
+                                            noOfLines={4}
+                                        >
                                             {line.text}
                                         </Text>
+                                        
+                                        {/* 元数据区块 */}
+                                        <VStack spacing={1} align="stretch" mb={3}>
+                                            <MetadataItem 
+                                                label="Collection" 
+                                                value={line.collection} 
+                                            />
+                                            <MetadataItem 
+                                                label="Contributor" 
+                                                value={line.contributor_address} 
+                                            />
+                                            <MetadataItem 
+                                                label="Source ID" 
+                                                value={line.source_id} 
+                                            />
+                                        </VStack>
+
                                         <Flex justify="space-between" align="center">
                                             <Text fontSize="xs" color={linkColor}>
                                                 Similarity: <strong>{line.distance.toFixed(2)}</strong>
