@@ -171,8 +171,7 @@ export default function Page() {
                                 bgGradient="linear(to-r, blue.600, purple.600)"
                                 onClick={(event) => {
                                     event.stopPropagation();
-                                    const skipModal = localStorage.getItem('skipPaymentModal') === 'true';
-                                    skipModal ? router.push(`/chat?query=${encodeURIComponent(question)}`) : onOpen();
+                                    onOpen();
                                 }}
                                 _hover={{
                                     animation: `${pulse} 1s ease infinite`,
@@ -221,7 +220,6 @@ export default function Page() {
                                             <Checkbox
                                                 colorScheme="blue"
                                                 size="md"
-                                                onChange={(e) => localStorage.setItem('skipPaymentModal', e.target.checked.toString())}
                                             >
                                                 <Text fontSize="sm">
                                                     Do not show this again for future searches
