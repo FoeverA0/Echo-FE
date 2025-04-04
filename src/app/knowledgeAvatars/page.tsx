@@ -12,7 +12,7 @@ import { AllNfts } from "@/components/AllNfts";
 const MotionBox = motion(Flex);
 
 export default function Page() {
-    const [radioValue, setRadioValue] = useState<"All NFTs" | "NFT Listings">("All NFTs");
+    const [radioValue, setRadioValue] = useState<"All Knowledge" | "Knowledge Listings">("All Knowledge");
     const brandColor = useColorModeValue("blue.600", "blue.200");
     const activeBorderColor = useColorModeValue("blue.500", "blue.300");
     const buttonHoverBg = useColorModeValue("gray.100", "gray.700");
@@ -97,7 +97,7 @@ export default function Page() {
                 gap={6}
                 wrap="wrap"
             >
-                {radioValue === "NFT Listings" ? (
+                {radioValue === "Knowledge Listings" ? (
                     <ListedNfts
                     />
                 ) : (
