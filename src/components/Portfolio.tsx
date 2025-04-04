@@ -32,7 +32,7 @@ export const Portfolio = ({address}: Props) => {
                     NFTs
                 </Text>
                 {nftsInWallet && nftsInWallet.length > 0 ? (
-                    <SimpleGrid spacing={10} columns={3}>
+                    <SimpleGrid spacing={10} columns={2}>
                         {nftsInWallet.map((nft) => {
                             return (
                                 <NftCard nft={nft} key={nft.address}>
@@ -54,7 +54,7 @@ export const Portfolio = ({address}: Props) => {
                 </Text>
                 {nftsListed &&
                     (nftsListed.length > 0 ? (
-                        <SimpleGrid spacing={10} columns={3}>
+                        <SimpleGrid spacing={10} columns={2}>
                             {nftsListed.map((nft) => {
                                 return <NftCard key={nft.address} nft={nft}/>;
                             })}

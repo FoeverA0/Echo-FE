@@ -71,7 +71,7 @@ export const ChatInput = ({
         {/* 操作栏 */}
         <Flex justify="space-between" align="center">
           <Select
-            placeholder="Select Knowledge Base"
+            placeholder="Smart Search"
             value={selectedKnowledgeBase}
             onChange={(e) => setSelectedKnowledgeBase(e.target.value)}
             width="220px"
@@ -85,6 +85,7 @@ export const ChatInput = ({
 
           <Button
             colorScheme="blue"
+            bgGradient="linear(to-r, blue.600, purple.600)"
             size="md"
             px={8}
             onClick={() => {

@@ -393,7 +393,6 @@ const NftDetails = () => {
                             </VStack>
                         </Box>
 
-
                         {/* 白名单区块 */}
                         <Box
                             width="100%"
