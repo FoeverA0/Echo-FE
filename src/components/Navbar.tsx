@@ -1,21 +1,21 @@
 "use client";
-import React, { useEffect } from "react";
+import React, {useEffect} from "react";
 import {
     Box, Flex, VStack, Text, Divider, Icon,
     useColorModeValue, Link, SlideFade, Tooltip
 } from "@chakra-ui/react";
 import NextLink from "next/link";
-import { FiBook, FiUploadCloud, FiFolder, FiChevronRight, FiInfo } from "react-icons/fi";
+import {FiBook, FiUploadCloud, FiFolder, FiChevronRight, FiInfo} from "react-icons/fi";
 import WalletButtons from "./WalletButtons";
-import { useRouter, usePathname } from "next/navigation";
-import { useRetrievedLines } from "@/context/RetrievedLinesContext";
-import { useKeylessAccount } from "@/context/KeylessAccountContext";
+import {useRouter, usePathname} from "next/navigation";
+import {useRetrievedLines} from "@/context/RetrievedLinesContext";
+import {useKeylessAccount} from "@/context/KeylessAccountContext";
 
 export const NavBar = () => {
     const router = useRouter();
     const pathname = usePathname();
-    const { retrievedLines, setRetrievedLines } = useRetrievedLines();
-    const { keylessAccount } = useKeylessAccount();
+    const {retrievedLines, setRetrievedLines} = useRetrievedLines();
+    const {keylessAccount} = useKeylessAccount();
     const MAX_LINES = 5;
     const isChatPage = pathname === "/chat";
 
@@ -62,15 +62,15 @@ export const NavBar = () => {
     ];
 
     // 元数据展示组件
-    const MetadataItem = ({ label, value }) => (
+    const MetadataItem = ({label, value}) => (
         <Flex align="center" fontSize="xs" color={metadataColor}>
             <Text fontWeight="semibold" mr={1}>{label}:</Text>
             <Tooltip label={value} placement="top" hasArrow>
-                <Text 
-                    fontFamily="monospace" 
-                    noOfLines={1} 
+                <Text
+                    fontFamily="monospace"
+                    noOfLines={1}
                     cursor="help"
-                    _hover={{ textDecoration: "underline dotted" }}
+                    _hover={{textDecoration: "underline dotted"}}
                 >
                     {value}
                 </Text>
@@ -104,7 +104,7 @@ export const NavBar = () => {
                 cursor="pointer"
                 mb={8}
                 position="relative"
-                _hover={{ transform: "scale(1.02)" }}
+                _hover={{transform: "scale(1.02)"}}
                 transition="transform 0.2s"
             >
                 <Flex align="center">
@@ -147,23 +147,23 @@ export const NavBar = () => {
                                 <Text fontSize="lg" fontWeight="bold" color={retrievedTextColor}>
                                     📌 Retrieved Context
                                 </Text>
-                                <Tooltip 
-                                    label="Verified blockchain metadata" 
-                                    placement="top" 
+                                <Tooltip
+                                    label="Verified blockchain metadata"
+                                    placement="top"
                                     hasArrow
                                 >
                                     <span>
-                                        <Icon as={FiInfo} ml={2} boxSize={4} color={metadataColor} />
+                                        <Icon as={FiInfo} ml={2} boxSize={4} color={metadataColor}/>
                                     </span>
                                 </Tooltip>
                             </Flex>
-                            <Divider mb={4} borderColor={borderColor} />
+                            <Divider mb={4} borderColor={borderColor}/>
                             <Box
                                 overflowY="auto"
                                 pr={2}
                                 css={{
-                                    '&::-webkit-scrollbar': { width: '6px' },
-                                    '&::-webkit-scrollbar-track': { bg: 'transparent' },
+                                    '&::-webkit-scrollbar': {width: '6px'},
+                                    '&::-webkit-scrollbar-track': {bg: 'transparent'},
                                     '&::-webkit-scrollbar-thumb': {
                                         bg: scrollbarThumbColor,
                                         borderRadius: '3px'
@@ -186,37 +186,40 @@ export const NavBar = () => {
                                         }}
                                         transition="all 0.2s"
                                     >
-                                        <Text 
-                                            fontSize="sm" 
-                                            color={retrievedTextColor} 
-                                            fontWeight="medium" 
-                                            mb={3} 
+                                        <Text
+                                            fontSize="sm"
+                                            color={retrievedTextColor}
+                                            fontWeight="medium"
+                                            mb={3}
                                             noOfLines={4}
                                         >
                                             {line.text}
                                         </Text>
-                                        
+
                                         {/* 元数据区块 */}
-                                        <VStack spacing={1} align="stretch" mb={3}>
-                                            <MetadataItem 
-                                                label="Collection" 
-                                                value={line.collection} 
-                                            />
-                                            <MetadataItem 
-                                                label="Contributor" 
-                                                value={line.contributor_address} 
-                                            />
-                                            <MetadataItem 
-                                                label="Source ID" 
-                                                value={line.source_id} 
-                                            />
-                                        </VStack>
+                                        <Link href={`/nft/0x${line.collection}`} target="_blank"
+                                              rel="noopener noreferrer">
+                                            <VStack spacing={1} align="stretch" mb={3}>
+                                                <MetadataItem
+                                                    label="Knowledge Avatar"
+                                                    value={`0x${line.collection}`}
+                                                />
+                                                <MetadataItem
+                                                    label="Contributor"
+                                                    value={`0x${line.contributor_address}`}
+                                                />
+                                                <MetadataItem
+                                                    label="Source ID"
+                                                    value={line.source_id}
+                                                />
+                                            </VStack>
+                                        </Link>
 
                                         <Flex justify="space-between" align="center">
                                             <Text fontSize="xs" color={linkColor}>
                                                 Similarity: <strong>{line.distance.toFixed(2)}</strong>
                                             </Text>
-                                            <Icon as={FiChevronRight} color={linkHoverColor} boxSize={4} />
+                                            <Icon as={FiChevronRight} color={linkHoverColor} boxSize={4}/>
                                         </Flex>
                                     </Box>
                                 ))}
@@ -226,11 +229,11 @@ export const NavBar = () => {
                                         color={linkColor}
                                         fontWeight="semibold"
                                         onClick={() => router.push("/details")}
-                                        _hover={{ textDecoration: "underline" }}
+                                        _hover={{textDecoration: "underline"}}
                                         display="flex"
                                     >
                                         View More Results
-                                        <Icon as={FiChevronRight} ml={1} />
+                                        <Icon as={FiChevronRight} ml={1}/>
                                     </Link>
                                 )}
                             </Box>
@@ -244,11 +247,11 @@ export const NavBar = () => {
                                     align="center"
                                     p={3}
                                     borderRadius="lg"
-                                    _hover={{ bg: menuHoverBg, transform: "translateX(4px)" }}
+                                    _hover={{bg: menuHoverBg, transform: "translateX(4px)"}}
                                     transition="all 0.2s"
                                     cursor="pointer"
                                 >
-                                    <Icon as={item.icon} boxSize={5} mr={3} color={retrievedTextColor} />
+                                    <Icon as={item.icon} boxSize={5} mr={3} color={retrievedTextColor}/>
                                     <Text fontSize="md" fontWeight="semibold" color={retrievedTextColor}>
                                         {item.label}
                                     </Text>
@@ -261,7 +264,7 @@ export const NavBar = () => {
 
             {/* 钱包按钮区域 */}
             <Box mt={8}>
-                <WalletButtons />
+                <WalletButtons/>
             </Box>
         </Flex>
     );

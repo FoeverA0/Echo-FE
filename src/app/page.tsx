@@ -8,27 +8,19 @@ import {
     Select,
     Textarea,
     useColorModeValue,
-    Grid,
     useDisclosure,
     ModalOverlay,
     ModalContent,
     ModalHeader,
     ModalCloseButton,
     ModalBody,
-    FormControl,
-    FormLabel,
-    NumberInput,
-    NumberInputField,
-    NumberInputStepper,
-    NumberIncrementStepper,
-    NumberDecrementStepper,
     ModalFooter,
     Modal, Text,
     ButtonGroup,
     VStack,
     Checkbox, Stack, Icon
 } from "@chakra-ui/react";
-import {useState} from "react";
+import React, {useState} from "react";
 import {AllNfts} from "@/components/AllNfts";
 import {useRouter} from "next/navigation";
 import {motion} from "framer-motion";
@@ -63,7 +55,7 @@ export default function Page() {
         "linear(to-r, blue.600, purple.600)",
         "linear(to-r, blue.300, purple.300)"
     );
-    const inputBg = useColorModeValue("white", "gray.800");
+
     const borderColor = useColorModeValue("gray.200", "gray.600");
     const focusBorderColor = useColorModeValue("blue.500", "blue.300");
     const cardBg = useColorModeValue("white", "gray.700");
